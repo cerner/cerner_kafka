@@ -1,13 +1,14 @@
 Cerner Kafka
 ============
 
-Description
------------
+[![Cookbook Version](https://img.shields.io/cookbook/v/cerner_kafka.svg)](https://community.opscode.com/cookbooks/cerner_kafka)
 
 A Chef cookbook to install [Apache's Kafka](http://kafka.apache.org/).
 
 A recipe to install the [KafkaOffsetMonitor](https://github.com/quantifind/KafkaOffsetMonitor) application is
 also included.
+
+View the [Change Log](CHANGELOG.md) to see what has changed.
 
 What this will setup
 --------------------
