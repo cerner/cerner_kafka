@@ -1,0 +1,46 @@
+---
+driver_plugin: vagrant
+driver_config:
+  vm_hostname: kafka
+  customize:
+    memory: 1024
+    cpus: 2
+    # Configure network interface to use hosts DNS resolver.  Doing this makes installing Gems and other network tasks significantly faster.
+    natdnsproxy1: 'off'
+    natdnshostresolver1: 'off'
+
+provisioner:
+  name: chef_solo
+
+platforms:
+  - name: ubuntu-14.04
+  - name: centos-6.5
+
+suites:
+- name: default
+  run_list:  
+  # We only include apt because of an issue installing java where ubuntu 
+  # requires an apt-get update in order to successfully run
+  - recipe[apt]
+  - recipe[apache_zookeeper]
+  - recipe[cerner_kafka]
+  - recipe[cerner_kafka::offset_monitor]
+  attributes: 
+    kafka:
+      zookeepers: 
+        - localhost:2181
+      lib_jars:
+        - http://repo1.maven.org/nexus/content/repositories/central/com/codahale/metrics/metrics-logback/3.0.1/metrics-logback-3.0.1.jar
+      server.properties: 
+        default.replication.factor: 1
+        broker.id: 1
+        bogus.for.testing: server
+        log.dirs: /var/kafka/data1,/var/kafka/data2,/var/kafka/data3
+      log4j.properties:
+        bogus.for.testing: log4j
+      env_vars:
+        KAFKA_HEAP_OPTS: '"-Xmx256m -Xms256m"'
+        BOGUS_VAR: TEST_VALUE
+      offset_monitor:
+        port: 8088
+      shutdown_timeout: 35
