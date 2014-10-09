@@ -1,5 +1,5 @@
 # coding: UTF-8
-# Cookbook Name:: kafka
+# Cookbook Name:: cerner_kafka
 # Recipe:: default
 
 # Create an array for storing errors we should verify before doing anything

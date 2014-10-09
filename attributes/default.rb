@@ -1,5 +1,5 @@
 # coding: UTF-8 
-# Cookbook Name:: kafka
+# Cookbook Name:: cerner_kafka
 # Attributes:: default
 
 default["kafka"]["user"] = "kafka"
