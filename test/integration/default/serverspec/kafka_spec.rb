@@ -21,7 +21,7 @@ describe port(9999) do
   it { should be_listening }
 end
 
-describe file('/opt/kafka/libs/metrics-logback-3.0.1.jar') do
+describe file('/opt/kafka/libs/metrics-logback-3.1.0.jar') do
   it { should be_file }
   it { should be_owned_by 'kafka' }
   it { should be_grouped_into 'kafka' }

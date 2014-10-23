@@ -153,6 +153,9 @@ template "#{node["kafka"]["install_dir"]}/bin/kafka-server-stop.sh" do
   owner node["kafka"]["user"]
   group node["kafka"]["group"]
   mode  00755
+  # Overwrite kafka-server-start.sh script since it has a bug in 0.8.0/0.8.1 (KAFKA-1189). This is fixed in 0.8.2
+  # We use start_with? instead of == to handle the case of 0.8.0.X or 0.8.1.X releases.
+  only_if { node["kafka"]["version"].start_with? "0.8.0" or node["kafka"]["version"].start_with? "0.8.1" }
 end
 
 template "#{node["kafka"]["install_dir"]}/bin/kafka-server-start.sh" do

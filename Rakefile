@@ -1,7 +1,7 @@
 # coding: UTF-8
 require 'octokit'
 
-VERSION_WITH_NAME_REGEX = /version\s*"\d+\.\d+\.\d+"/
+VERSION_WITH_NAME_REGEX = /version\s*'\d+\.\d+\.\d+'/
 VERSION_REGEX = /\d+\.\d+\.\d+/
 
 REPO = "cerner/cerner_kafka"

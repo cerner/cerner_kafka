@@ -30,7 +30,7 @@ suites:
       zookeepers: 
         - localhost:2181
       lib_jars:
-        - http://repo1.maven.org/nexus/content/repositories/central/com/codahale/metrics/metrics-logback/3.0.1/metrics-logback-3.0.1.jar
+        - http://search.maven.org/remotecontent?filepath=io/dropwizard/metrics/metrics-logback/3.1.0/metrics-logback-3.1.0.jar
       server.properties: 
         default.replication.factor: 1
         broker.id: 1

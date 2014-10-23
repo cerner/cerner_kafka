@@ -217,7 +217,11 @@ The integration tests are written with [test-kitchen](http://kitchen.ci/) and
 
 The lint testing can be run with:
 
-    foodcritic . -f any
+    foodcritic . -f any -t ~FC047
+
+We ignore [FC047](http://www.foodcritic.io/#FC047) because there is an [issue](https://github.com/acrmp/foodcritic/issues/225) 
+with it giving false positives. Our code sets a default precedence at that line but foodcritic is confused by our use of `node[..]` 
+to provide a value for the name of one of the attributes.
 
 Contributing
 ------------
