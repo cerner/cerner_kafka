@@ -184,6 +184,9 @@ Attributes
  * `node["kafka"]["offset_monitor"]["refresh"]` : How often the offset monitor refreshes and stores a point in the DB, in `value`.`unit` format (default = "15.minutes")
  * `node["kafka"]["offset_monitor"]["retain"]` : How long the offset monitoring data is kept in the DB, in `value`.`unit` format (default = "7.days")
  * `node["kafka"]["offset_monitor"]["db_name"]` : The base file name for the offset monitoring database file written into the kafka user's home directory (default = "offset_monitor")
+*  `node["kafka"]["service"]["stdout"]` : The file to keep std output of kafka init service (default = "/dev/null")
+*  `node["kafka"]["service"]["stderr"]` : The file to keep std output of kafka init service (default = "/dev/null")
+
 
 Testing
 -------
