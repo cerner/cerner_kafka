@@ -12,6 +12,9 @@ default["kafka"]["download_url"] = "https://archive.apache.org/dist/kafka"
 default["kafka"]["base_dir"]  = "/opt"
 default["kafka"]["log_dir"] = "/var/log/kafka"
 
+default["kafka"]["service"]["stdout"] = "/dev/null"
+default["kafka"]["service"]["stderr"] = "/dev/null"
+
 # These are required to be supplied by the consumer so setting to nil
 default["kafka"]["brokers"] = nil
 default["kafka"]["zookeepers"] = nil
