@@ -2,6 +2,7 @@ Cerner Kafka
 ============
 
 [![Cookbook Version](https://img.shields.io/cookbook/v/cerner_kafka.svg)](https://community.opscode.com/cookbooks/cerner_kafka)
+[![Build Status](https://travis-ci.org/cerner/cerner_kafka.svg?branch=master)](https://travis-ci.org/cerner/cerner_kafka)
 
 A Chef cookbook to install [Apache's Kafka](http://kafka.apache.org/).
 
