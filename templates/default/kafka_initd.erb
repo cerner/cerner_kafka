@@ -26,57 +26,57 @@ SETUP_ENV=""
 <% end -%>
 
 # We have to pipe STDOUT here otherwise it will print logs when running script
-START_SERVER_CMD="$SETUP_ENV <%= node["kafka"]["install_dir"] %>/bin/kafka-server-start.sh <%= node["kafka"]["install_dir"] %>/config/server.properties >> <%= node["kafka"]["initservice"]["stdout"] %>  2>> <%= node["kafka"]["initservice"]["stderr"] %> "
+START_SERVER_CMD="$SETUP_ENV nohup <%= node["kafka"]["install_dir"] %>/bin/kafka-server-start.sh <%= node["kafka"]["install_dir"] %>/config/server.properties >> <%= node["kafka"]["initservice"]["stdout"] %>  2>> <%= node["kafka"]["initservice"]["stderr"] %> &"
 
 # We have to pipe STDOUT here otherwise it will print logs when running script
 STOP_SERVER_CMD="<%= node["kafka"]["install_dir"] %>/bin/kafka-server-stop.sh >> <%= node["kafka"]["initservice"]["stdout"] %>  2>> <%= node["kafka"]["initservice"]["stderr"] %>"
 
 start() {
-	findPid
-	
-	if [ "" = "$FOUND_PID" ]; then
-      su -l $USER -c "$START_SERVER_CMD"
+  findPid
+  
+  if [ "" = "$FOUND_PID" ]; then
+    su -l $USER -c "$START_SERVER_CMD"
       
-      if [[ $? -ne 0 ]]; then
-        echo "Error starting Kafka"
-        exit 1
-      fi
-      
-      echo "Kafka successfully started"
-      
-    else
-      echo "Kafka is already running"
+    if [ $? -ne 0 ]; then
+      echo "Error starting Kafka"
+      exit 1
     fi
+      
+    echo "Kafka successfully started"
+      
+  else
+    echo "Kafka is already running"
+  fi
 }
 
 stop() {
-	findPid
-	if [ -z "$FOUND_PID" ]; then
-      echo "Kafka is not running, nothing to stop"
-    else
+  findPid
+  if [ -z "$FOUND_PID" ]; then
+    echo "Kafka is not running, nothing to stop"
+  else
     
-      while [[ -n $FOUND_PID ]]; 
-  	  do
-        echo "Attempting to shutdown Kafka..."
-        su -l $USER -c "$STOP_SERVER_CMD"
+    while [ -n "$FOUND_PID" ]; 
+    do
+      echo "Attempting to shutdown Kafka..."
+      su -l $USER -c "$STOP_SERVER_CMD"
       
-        if [[ $? -ne 0 ]]; then
-	      echo "Error stopping Kafka"
-	      exit 1
-	    fi
-	    
-	    sleep $SLEEP_TIME
-        CURRENT_WAIT=$(($CURRENT_WAIT+$SLEEP_TIME))
-        if [[ $CURRENT_WAIT -gt $TIMEOUT ]]; then
-          echo "Timed out waiting for Kafka to stop"
-          exit 1
-        fi
-        findPid
-      done
+      if [ $? -ne 0 ]; then
+        echo "Error stopping Kafka"
+        exit 1
+      fi
       
-      echo "Stopped Kafka"
+      sleep $SLEEP_TIME
+      CURRENT_WAIT=$(($CURRENT_WAIT+$SLEEP_TIME))
+      if [ $CURRENT_WAIT -gt $TIMEOUT ]; then
+        echo "Timed out waiting for Kafka to stop"
+        exit 1
+      fi
+      findPid
+    done
       
-    fi
+    echo "Stopped Kafka"
+      
+  fi
 }
 
 status() {
@@ -89,7 +89,7 @@ status() {
 }
 
 findPid() {
-	FOUND_PID=`pgrep -u $USER -f $KAFKA_MAIN`
+  FOUND_PID=`pgrep -u $USER -f $KAFKA_MAIN`
 }
 
 case "$1" in
