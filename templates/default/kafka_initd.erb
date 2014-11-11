@@ -26,10 +26,10 @@ SETUP_ENV=""
 <% end -%>
 
 # We have to pipe STDOUT here otherwise it will print logs when running script
-START_SERVER_CMD="$SETUP_ENV nohup <%= node["kafka"]["install_dir"] %>/bin/kafka-server-start.sh <%= node["kafka"]["install_dir"] %>/config/server.properties >> <%= node["kafka"]["initservice"]["stdout"] %>  2>> <%= node["kafka"]["initservice"]["stderr"] %> &"
+START_SERVER_CMD="$SETUP_ENV nohup <%= node["kafka"]["install_dir"] %>/bin/kafka-server-start.sh <%= node["kafka"]["install_dir"] %>/config/server.properties >> <%= node["kafka"]["service"]["stdout"] %>  2>> <%= node["kafka"]["service"]["stderr"] %> &"
 
 # We have to pipe STDOUT here otherwise it will print logs when running script
-STOP_SERVER_CMD="<%= node["kafka"]["install_dir"] %>/bin/kafka-server-stop.sh >> <%= node["kafka"]["initservice"]["stdout"] %>  2>> <%= node["kafka"]["initservice"]["stderr"] %>"
+STOP_SERVER_CMD="<%= node["kafka"]["install_dir"] %>/bin/kafka-server-stop.sh >> <%= node["kafka"]["service"]["stdout"] %>  2>> <%= node["kafka"]["service"]["stderr"] %>"
 
 start() {
   findPid
