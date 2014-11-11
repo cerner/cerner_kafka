@@ -211,20 +211,20 @@ In order to run tests you must have the development dependencies installed. You 
 The unit tests are written with [rspec](http://rspec.info/) and [chefspec](https://github.com/sethvargo/chefspec). 
 They can be run with:
 
-    rspec
+    rake unit_test
 
-The integration tests are written with [test-kitchen](http://kitchen.ci/) and 
-[serverspec](http://serverspec.org/). They can be run with:
+The lint testing uses [Foodcritic](http://www.foodcritic.io/) and can be run with:
 
-    kitchen test
+    rake lint_test
 
-The lint testing can be run with:
+The integration tests are written with [test-kitchen](http://kitchen.ci/) and [serverspec](http://serverspec.org/). 
+They can be run with:
 
-    foodcritic . -f any -t ~FC047
+    rake integration_test
 
-We ignore [FC047](http://www.foodcritic.io/#FC047) because there is an [issue](https://github.com/acrmp/foodcritic/issues/225) 
-with it giving false positives. Our code sets a default precedence at that line but foodcritic is confused by our use of `node[..]` 
-to provide a value for the name of one of the attributes.
+All tests can be run with:
+
+    rake test
 
 Contributing
 ------------

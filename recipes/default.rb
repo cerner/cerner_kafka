@@ -38,8 +38,8 @@ node.default["kafka"]["log4j.properties"]["log4j.appender.requestAppender.File"]
 node.default["kafka"]["log4j.properties"]["log4j.appender.controllerAppender.File"] = File.join node["kafka"]["log_dir"], "controller.log"
 
 # Set Log file for kafka init script
-node.default["kafka"]["initservice"]["stdout"] = node["kafka"]["initservice"]["stdout"] || File.join node["kafka"]["log_dir"], "kafka_init_stdout.log"
-node.default["kafka"]["initservice"]["stderr"] = node["kafka"]["initservice"]["stderr"] || File.join node["kafka"]["log_dir"], "kafka_init_stderr.log"
+node.default["kafka"]["initservice"]["stdout"] = node["kafka"]["initservice"]["stdout"] || File.join(node["kafka"]["log_dir"], "kafka_init_stdout.log")
+node.default["kafka"]["initservice"]["stderr"] = node["kafka"]["initservice"]["stderr"] || File.join(node["kafka"]["log_dir"], "kafka_init_stderr.log")
 
 # Set default limits
 node.default["ulimit"]["users"][node["kafka"]["user"]]["filehandle_limit"] = 32768

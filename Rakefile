@@ -1,12 +1,53 @@
 # coding: UTF-8
 require 'octokit'
+require 'chef'
 
 VERSION_WITH_NAME_REGEX = /version\s*'\d+\.\d+\.\d+'/
 VERSION_REGEX = /\d+\.\d+\.\d+/
 
 REPO = "cerner/cerner_kafka"
 
+task :unit_test do
+  puts "Running Unit Tests ..."
+  exit 1 unless system("rspec")
+end
+
+task :integration_test do
+  puts "Running Integration Tests ..."
+  exit 1 unless system("kitchen test")
+end
+
+task :lint_test do
+  # We currently ignore FC047 - http://www.foodcritic.io/#FC047) due to a bug in foodcritic giving false 
+  # positives (https://github.com/acrmp/foodcritic/issues/225)
+  puts "Running Lint Tests ..."
+  exit 1 unless system("foodcritic . -f any -t ~FC047")
+end
+
+task :test do
+  puts "Running All Tests"
+
+  %w{ unit_test lint_test integration_test}.each do |task|
+    Rake::Task[task].invoke
+  end
+
+end
+
 task :release do
+  puts "Releasing the cookbook ..."
+
+  config_path = File.expand_path("~/.chef/knife.rb")
+  Chef::Config.from_file(config_path)
+
+  raise "No 'user_name' defined in #{config_path} for user to publish to supermarket" unless Chef::Config.has_key? :user_name
+  raise "No 'user_key' defined in #{config_path} for key to publish to supermarket" unless Chef::Config.has_key? :user_key
+
+  if ENV["SKIP_TESTS"]
+    puts "Skipping tests since SKIP_TESTS is set"
+  else
+    Rake::Task["test"].invoke
+  end
+
   version = cookbook_version
   
   # Update change log
@@ -16,7 +57,7 @@ task :release do
   
   # Share the cookbook
   puts "Sharing cookbook ..."
-  run_command "stove --no-git --username bbaugher --key ~/.chef/bbaugher.pem"
+  run_command "stove --no-git --username #{Chef::Config[:user_name]} --key #{Chef::Config[:user_key]}"
   puts "Shared cookbook!"
  
   # Tag the release
