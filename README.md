@@ -238,6 +238,16 @@ To contribute to the project execute a pull request through github. The pull req
 by the project committers. Please attempt to conform to the test, code conventions, and code formatting standards if any
 are specified by the project before submitting a pull request.
 
+Releases
+--------
+
+Releases should happen regularly after most changes. Feel free to request a release by logging an issue.
+
+Committers
+----------
+
+For information related to being a committer check [here](COMMITTERS.md).
+
 LICENSE
 -------
 
