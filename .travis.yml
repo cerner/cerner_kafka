@@ -1,0 +1,9 @@
+language: ruby
+cache: bundler
+rvm:
+  - 2.1.2
+script:
+# We cannot run integration tests on travis since that uses vagrant/virtualbox and 
+# is not available in travis ci
+  - bundle exec rake unit_test
+  - bundle exec rake lint_test
