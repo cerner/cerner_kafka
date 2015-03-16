@@ -7,21 +7,26 @@ VERSION_REGEX = /\d+\.\d+\.\d+/
 
 REPO = "cerner/cerner_kafka"
 
+task :install do
+  puts "Installing development gems ..."
+  exit 1 unless system("bundle install --path vendor/bundle")
+end
+
 task :unit_test do
   puts "Running Unit Tests ..."
-  exit 1 unless system("rspec")
+  exit 1 unless system("bundle exec rspec")
 end
 
 task :integration_test do
   puts "Running Integration Tests ..."
-  exit 1 unless system("kitchen test")
+  exit 1 unless system("bundle exec kitchen test")
 end
 
 task :lint_test do
   # We currently ignore FC047 - http://www.foodcritic.io/#FC047) due to a bug in foodcritic giving false 
   # positives (https://github.com/acrmp/foodcritic/issues/225)
   puts "Running Lint Tests ..."
-  exit 1 unless system("foodcritic . -f any -t ~FC047")
+  exit 1 unless system("bundle exec foodcritic . -f any -t ~FC047")
 end
 
 task :test do
@@ -57,7 +62,7 @@ task :release do
   
   # Share the cookbook
   puts "Sharing cookbook ..."
-  run_command "stove --no-git --username #{Chef::Config[:user_name]} --key #{Chef::Config[:user_key]}"
+  run_command "bundle exec stove --no-git --username #{Chef::Config[:user_name]} --key #{Chef::Config[:user_key]}"
   puts "Shared cookbook!"
  
   # Tag the release
