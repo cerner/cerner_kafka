@@ -27,18 +27,7 @@ default["kafka"]["env_vars"]["KAFKA_HEAP_OPTS"] = "\"-Xmx4G -Xms4G\""
 default["kafka"]["env_vars"]["KAFKA_JVM_PERFORMANCE_OPTS"] = "\"-XX:PermSize=48m -XX:MaxPermSize=48m -XX:+UseG1GC -XX:MaxGCPauseMillis=20 -XX:InitiatingHeapOccupancyPercent=35\""
 default["kafka"]["lib_jars"] = []
 
-default["kafka"]["server.properties"]["log.dirs"] = "/var/kafka"
-default["kafka"]["server.properties"]["port"] = 6667
-default["kafka"]["server.properties"]["num.partitions"] = 4
-default["kafka"]["server.properties"]["default.replication.factor"] = 3
-default["kafka"]["server.properties"]["log.flush.interval.messages"] = 1
-default["kafka"]["server.properties"]["log.retention.minutes"] = 30 * 24 * 60
-default["kafka"]["server.properties"]["log.retention.check.interval.ms"] = 3600000
-default["kafka"]["server.properties"]["num.replica.fetchers"] = 4
-default["kafka"]["server.properties"]["replica.fetch.wait.max.ms"] = 5000
-default["kafka"]["server.properties"]["replica.lag.max.messages"] = 10000
-default["kafka"]["server.properties"]["auto.leader.rebalance.enable"] = true
-default["kafka"]["server.properties"]["num.network.threads"] = 8
+default["kafka"]["server.properties"]["log.dirs"] = "/tmp/kafka-logs"
 
 # Log4J config
 default["kafka"]["log4j.properties"]["log4j.rootLogger"] = "INFO, stdout "
