@@ -52,7 +52,7 @@ These are the requirements that need to be satisfied in order to get the cookboo
 If you don't fulfill the requirements the recipe will error out telling you what was missing.
 
 Additionally if you want to use a Zookeeper chroot with your kafka installation you can provide it by setting 
-`node["kafka"]["zookeeper_chroot"]`.
+`node["kafka"]["zookeeper_chroot"]`. The cookbook will create the chroot in Zookeeper if it does not exist.
 
 The attributes,
 

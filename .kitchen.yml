@@ -29,6 +29,7 @@ suites:
     kafka:
       zookeepers: 
         - localhost:2181
+      zookeeper_chroot: /kafka/testing
       lib_jars:
         - http://search.maven.org/remotecontent?filepath=io/dropwizard/metrics/metrics-logback/3.1.0/metrics-logback-3.1.0.jar
       server.properties: 

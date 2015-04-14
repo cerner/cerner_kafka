@@ -32,7 +32,7 @@ describe 'kafka offset monitor' do
     # Generate a random topic
     topicName = "testNewTopic_" + rand(100000).to_s
     
-    createOutput = `/opt/kafka/bin/kafka-topics.sh --create --topic #{topicName} --partitions 1 --replication-factor 1 --zookeeper localhost:2181 2> /dev/null`
+    createOutput = `/opt/kafka/bin/kafka-topics.sh --create --topic #{topicName} --partitions 1 --replication-factor 1 --zookeeper localhost:2181/kafka/testing 2> /dev/null`
     expect(createOutput).to include("Created topic")
     sleep 1
 
@@ -45,10 +45,10 @@ describe 'kafka offset monitor' do
     topicName = "testNewTopic_" + rand(100000).to_s
     groupName = "testNewGroup_" + rand(100000).to_s
       
-    createOutput = `/opt/kafka/bin/kafka-topics.sh --create --topic #{topicName} --partitions 1 --replication-factor 1 --zookeeper localhost:2181 2> /dev/null`
+    createOutput = `/opt/kafka/bin/kafka-topics.sh --create --topic #{topicName} --partitions 1 --replication-factor 1 --zookeeper localhost:2181/kafka/testing 2> /dev/null`
     expect(createOutput).to include("Created topic")
 
-    consumerOutput = `/opt/kafka/bin/kafka-console-consumer.sh --zookeeper localhost:2181 --group #{groupName} --whitelist #{topicName} --consumer-timeout-ms 500 2>&1`
+    consumerOutput = `/opt/kafka/bin/kafka-console-consumer.sh --zookeeper localhost:2181/kafka/testing --group #{groupName} --whitelist #{topicName} --consumer-timeout-ms 500 2>&1`
     expect(consumerOutput).to include("Consumed 0 messages")
 
     wgetOutput = `wget http://localhost:8088/#/group/#{groupName} 2>&1 | grep response`
