@@ -16,6 +16,21 @@ describe 'cerner_kafka::default' do
   it 'use zookeepers and brokers attributes' do
     chef_run.converge(described_recipe)
     expect(chef_run).to start_service('kafka')
+    expect(chef_run.node["kafka"]["server.properties"]["broker.id"]).to eq(1)
+    expect(chef_run.node["kafka"]["server.properties"]["zookeeper.connect"]).to eq('localhost:2181')
+  end
+
+  it 'use zookeepers, brokers and chroot attributes' do
+    chef = ChefSpec::SoloRunner.new do |node|
+      node.set['kafka']['brokers'] = ['chefspec']
+      node.set['kafka']['zookeepers'] = ['host1:2181', 'host2:2181', 'host3:2181']
+      node.set['kafka']['zookeeper_chroot'] = '/kafka/test'
+    end
+
+    chef.converge(described_recipe)
+    expect(chef).to start_service('kafka')
+    expect(chef.node["kafka"]["server.properties"]["broker.id"]).to eq(1)
+    expect(chef.node["kafka"]["server.properties"]["zookeeper.connect"]).to eq('host1:2181,host2:2181,host3:2181/kafka/test')
   end
 
   it 'use zookeepers and broker.id attributes' do

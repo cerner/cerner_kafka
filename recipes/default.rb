@@ -22,7 +22,12 @@ end
 if (node["kafka"]["zookeepers"].nil? || (!node["kafka"]["zookeepers"].is_a? Array) || node["kafka"]["zookeepers"].empty?) && !node["kafka"]["server.properties"].has_key?("zookeeper.connect")
   errors.push "node[:kafka][:zookeepers] or node[:kafka][:server.properties][:zookeeper.connect] was not set properly"
 elsif !node["kafka"]["server.properties"].has_key?("zookeeper.connect")
-  node.default["kafka"]["server.properties"]["zookeeper.connect"] = node["kafka"]["zookeepers"].join ","
+  servers = node["kafka"]["zookeepers"].join ","
+  if node["kafka"]["zookeeper_chroot"].nil?
+    node.default["kafka"]["server.properties"]["zookeeper.connect"] = servers
+  else
+    node.default["kafka"]["server.properties"]["zookeeper.connect"] = servers + node["kafka"]["zookeeper_chroot"]
+  end
 end
 
 # Raise an exception if there are any problems
