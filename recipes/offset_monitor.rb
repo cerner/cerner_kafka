@@ -1,4 +1,4 @@
-# coding: UTF-8 
+# coding: UTF-8
 # Cookbook Name:: cerner_kafka
 # Recipe:: offset_monitor
 
@@ -17,6 +17,9 @@ raise "Unable to run kafka::offsetmonitor : [#{errors.join ", "}]" unless errors
 node.default["kafka"]["offset_monitor"]["install_dir"] = "#{node["kafka"]["base_dir"]}/kafka-offset-monitor"
 
 zookeepers = node["kafka"]["zookeepers"].join ","
+zookeepers += node["kafka"]["zookeeper_chroot"] unless node["kafka"]["zookeeper_chroot"].nil?
+
+
 offsetMonitorFileName = File.basename(node["kafka"]["offset_monitor"]["url"])
 fullOffsetMonitorFileName = File.join node["kafka"]["offset_monitor"]["install_dir"], offsetMonitorFileName
 
@@ -68,7 +71,7 @@ execute "copy offset monitor file" do
   not_if do
     File.exists? fullOffsetMonitorFileName
   end
- 
+
   # In case kafka offset monitor is running we need to stop it before we upgrade/change installations
   notifies :stop, "service[kafka-offset-monitor]", :immediately
 end
