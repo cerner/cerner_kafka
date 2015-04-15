@@ -19,6 +19,7 @@ default["kafka"]["service"]["stderr"] = File.join node["kafka"]["log_dir"], "kaf
 # These are required to be supplied by the consumer so setting to nil
 default["kafka"]["brokers"] = nil
 default["kafka"]["zookeepers"] = nil
+default["kafka"]["zookeeper_chroot"] = nil
 
 default["kafka"]["shutdown_timeout"] = 30     # init.d script shutdown time-out in seconds
 default["kafka"]["env_vars"]["JMX_PORT"] = "9999"

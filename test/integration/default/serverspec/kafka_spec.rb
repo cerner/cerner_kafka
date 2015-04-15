@@ -101,10 +101,10 @@ describe 'kafka broker' do
     # Pick a random topic so if we re-run the tests on the same VM it won't fail with 'topic already created'
     topicName = "testNewTopic_" + rand(100000).to_s
 
-    createOutput = `/opt/kafka/bin/kafka-topics.sh --create --topic #{topicName} --partitions 1 --replication-factor 1 --zookeeper localhost:2181 2> /dev/null`
+    createOutput = `/opt/kafka/bin/kafka-topics.sh --create --topic #{topicName} --partitions 1 --replication-factor 1 --zookeeper localhost:2181/kafka/testing 2> /dev/null`
     expect(createOutput).to include("Created topic")
 
-    listOutput = `/opt/kafka/bin/kafka-topics.sh --list --zookeeper localhost:2181 2> /dev/null`
+    listOutput = `/opt/kafka/bin/kafka-topics.sh --list --zookeeper localhost:2181/kafka/testing 2> /dev/null`
     expect(listOutput).to include("#{topicName}")
   end
 
@@ -113,12 +113,12 @@ describe 'kafka broker' do
     message = "super secret message"
 
     # Ensure the topic is created before having the consumer listen for it
-    Kernel.system "/opt/kafka/bin/kafka-topics.sh --create --topic #{topic} --partitions 1 --replication-factor 1 --zookeeper localhost:2181 2> /dev/null"
+    Kernel.system "/opt/kafka/bin/kafka-topics.sh --create --topic #{topic} --partitions 1 --replication-factor 1 --zookeeper localhost:2181/kafka/testing 2> /dev/null"
 
     # The consumer command allows a user to 'listen' for messages on the topic and write them to STDOUT as they come in
     # In this case we are re-directing STDOUT to a file so we can read later
     # We also run this as a background process so we can also start the producer
-    Kernel.system "/opt/kafka/bin/kafka-console-consumer.sh --zookeeper localhost:2181 --whitelist #{topic} >> /tmp/consumer.out 2>&1 &"
+    Kernel.system "/opt/kafka/bin/kafka-console-consumer.sh --zookeeper localhost:2181/kafka/testing --whitelist #{topic} >> /tmp/consumer.out 2>&1 &"
 
     # The producer is a command that allows a user to write input to the console as 'messages' to the topic, separated by new line characters
     # In this case we run the command and write the same message several times over 5s in an attempt to ensure the consumer saw the message

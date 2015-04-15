@@ -22,7 +22,12 @@ end
 if (node["kafka"]["zookeepers"].nil? || (!node["kafka"]["zookeepers"].is_a? Array) || node["kafka"]["zookeepers"].empty?) && !node["kafka"]["server.properties"].has_key?("zookeeper.connect")
   errors.push "node[:kafka][:zookeepers] or node[:kafka][:server.properties][:zookeeper.connect] was not set properly"
 elsif !node["kafka"]["server.properties"].has_key?("zookeeper.connect")
-  node.default["kafka"]["server.properties"]["zookeeper.connect"] = node["kafka"]["zookeepers"].join ","
+  servers = node["kafka"]["zookeepers"].join ","
+  if node["kafka"]["zookeeper_chroot"].nil?
+    node.default["kafka"]["server.properties"]["zookeeper.connect"] = servers
+  else
+    node.default["kafka"]["server.properties"]["zookeeper.connect"] = servers + node["kafka"]["zookeeper_chroot"]
+  end
 end
 
 # Raise an exception if there are any problems
@@ -51,6 +56,36 @@ log "Binary URL : #{node["kafka"]["binary_url"]}"
 
 include_recipe "java"
 include_recipe "ulimit"
+
+# Create kafka chroot in Zookeeper
+unless node["kafka"]["zookeeper_chroot"].nil?
+  # Installs everything needed for the zookeeper gem including the gem itself
+  include_recipe "zookeeper::install"
+
+  ruby_block "create zookeeper chroot for kafka" do
+    block do
+      require 'zookeeper'
+
+      # Get zookeeper quorum (without chroot)
+      zk_connect = node["kafka"]["server.properties"]["zookeeper.connect"].to_s.clone
+      zk_connect.slice!(node["kafka"]["zookeeper_chroot"])
+
+      zk = ::Zookeeper.new(zk_connect)
+
+      # We have to create each directory individually
+      current_dir = ""
+      node["kafka"]["zookeeper_chroot"].split('/').delete_if{|x| x.empty?}.each do |dir|
+        current_dir = current_dir + "/" + dir
+        unless zk.stat(:path => current_dir)[:stat].exists?
+          zk.create(:path => current_dir)
+        end
+      end
+
+    end
+  end
+
+end
+
 
 # setup kafka group
 group node["kafka"]["group"] do

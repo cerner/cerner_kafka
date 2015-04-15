@@ -17,6 +17,11 @@ raise "Unable to run kafka::offsetmonitor : [#{errors.join ", "}]" unless errors
 node.default["kafka"]["offset_monitor"]["install_dir"] = "#{node["kafka"]["base_dir"]}/kafka-offset-monitor"
 
 zookeepers = node["kafka"]["zookeepers"].join ","
+
+unless node["kafka"]["zookeeper_chroot"].nil?
+  zookeepers = zookeepers + node["kafka"]["zookeeper_chroot"]
+end
+
 offsetMonitorFileName = File.basename(node["kafka"]["offset_monitor"]["url"])
 fullOffsetMonitorFileName = File.join node["kafka"]["offset_monitor"]["install_dir"], offsetMonitorFileName
 

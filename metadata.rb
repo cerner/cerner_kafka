@@ -6,5 +6,6 @@ description       "Installs and configures a Kafka"
 
 depends 'java'
 depends 'ulimit'
+depends 'zookeeper'
 
 version           '1.1.0'
