@@ -51,9 +51,6 @@ These are the requirements that need to be satisfied in order to get the cookboo
 
 If you don't fulfill the requirements the recipe will error out telling you what was missing.
 
-Additionally if you want to use a Zookeeper chroot with your kafka installation you can provide it by setting 
-`node["kafka"]["zookeeper_chroot"]`. The cookbook will create the chroot in Zookeeper if it does not exist.
-
 The attributes,
 
  * `node["kafka"]["brokers"]`
@@ -72,6 +69,10 @@ all Chef nodes running the kafka recipe (and are part of the same Kafka cluster)
 `node["kafka"]["brokers"]` and all broker hostnames must be in the same order. We determine the 
 `node["kafka"]["server.properties"]["broker.id"]` by using the index of Chef node's fqdn/hostname/ip in the
 list as the `node["kafka"]["server.properties"]["broker.id"]`.
+
+Additionally if you want to use a Zookeeper chroot with your kafka installation you can provide it by setting 
+`node["kafka"]["zookeeper_chroot"]`. If `node["kafka"]["zookeeper_chroot"]` is specified the cookbook will 
+create the chroot in Zookeeper if it does not exist.
 
 Using `node["kafka"]["brokers"]`, `node["kafka"]["zookeepers"]` and `node["kafka"]["zookeeper_chroot"]` attribtues are 
 the recommended way to setup your kafka cluster in Chef.
@@ -165,7 +166,7 @@ Attributes
 
  * `node["kafka"]["brokers"]` : An array of the list of brokers in the Kafka cluster. This should even include the node running the recipe. (default=[])
  * `node["kafka"]["zookeepers"]` : An array of the list of Zookeepers that Kafka uses. (default=[])
- * `node["kafka"]["zookeeper_chroot"]` : A string representing the Zookeeper chroot to use for Kafka. (default=nil)
+ * `node["kafka"]["zookeeper_chroot"]` : A string representing the Zookeeper chroot to use for Kafka which can separate Kafka's data from others in Zookeeper. (default=nil)
  * `node["kafka"]["user"]` : The name of the user used to run Kafka (default="kafka")
  * `node["kafka"]["group"]` : The name of the group the user running Kafka is associated with (default="kafka")
  * `node["kafka"]["openFileLimit"]` : The open file limit for the user running the Kafka service (default=32768)
