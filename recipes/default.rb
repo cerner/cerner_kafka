@@ -102,6 +102,16 @@ node["kafka"]["server.properties"]["log.dirs"].split(",").each do |log_dir|
   end
 end
 
+# Create init.d script for kafka
+# We need to land this early on in case our resources attempt to notify the service resource to stop/start/restart immediately
+template "/etc/init.d/kafka" do
+  source "kafka_initd.erb"
+  owner "root"
+  group "root"
+  mode  00755
+  notifies :restart, "service[kafka]"
+end
+
 # Download kafka binary file if it does not exist already
 remote_file "#{Chef::Config[:file_cache_path]}/#{binaryFileName}" do
   action :create_if_missing
@@ -185,15 +195,6 @@ end
 # Link kafka config to /etc/kafka
 link "/etc/kafka" do
   to "#{node["kafka"]["install_dir"]}/config"
-end
-
-# Create init.d script for kafka
-template "/etc/init.d/kafka" do
-  source "kafka_initd.erb"
-  owner "root"
-  group "root"
-  mode  00755
-  notifies :restart, "service[kafka]"
 end
 
 # Start/Enable Kafka
