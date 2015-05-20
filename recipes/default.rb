@@ -11,10 +11,11 @@ if (node["kafka"]["brokers"].nil? || !(node["kafka"]["brokers"].is_a? Array) || 
 elsif !node["kafka"]["server.properties"].has_key?("broker.id")
   # Generate brokerId for Kafka (uses the index of the brokers list to figure out which ID this broker should have). We add 1 to ensure
   # we have a positive (non zero) number
-  brokerId = (node["kafka"]["brokers"].index{|broker| broker == node["fqdn"] || broker == node["ipaddress"] || broker == node["hostname"]} ) + 1
+  brokerId = (node["kafka"]["brokers"].index{|broker| broker == node["fqdn"] || broker == node["ipaddress"] || broker == node["hostname"]} )
   if brokerId.nil?
-    errors.push "Unable to find node in node[:kafka][:brokers] : #{node["kafka"]["brokers"]}"
+    return "Unable to find #{node["fqdn"]}, #{node["ipaddress"]} or #{node["hostname"]} in node[:kafka][:brokers] : #{node["kafka"]["brokers"]}"
   end
+  brokerId += 1
   node.default["kafka"]["server.properties"]["broker.id"] = brokerId
 end
 
