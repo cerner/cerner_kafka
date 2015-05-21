@@ -6,7 +6,7 @@
 errors = Array.new
 
 # Verify either node["kafka"]["brokers"] or node["kafka"]["server.properties"]["broker.id"] is set properly
-ruby_block 'assert broker and zookeeper lists are correct' do
+ruby_block 'assert broker and zookeeper lists are correct' do # ~FC014
   block_name 'attribute_assertions'
   block do
     if (node['kafka']['brokers'].to_a.empty?) && !node['kafka']['server.properties'].has_key?('broker.id')
