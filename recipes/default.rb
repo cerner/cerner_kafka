@@ -7,6 +7,7 @@ errors = Array.new
 
 # Verify either node["kafka"]["brokers"] or node["kafka"]["server.properties"]["broker.id"] is set properly
 ruby_block 'assert broker and zookeeper lists are correct' do
+  block_name 'attribute_assertions'
   block do
     if (node['kafka']['brokers'].to_a.empty?) && !node['kafka']['server.properties'].has_key?('broker.id')
       errors.push 'node[:kafka][:brokers] or node[:kafka][:server.properties][:broker.id] must be set properly'
@@ -33,11 +34,10 @@ ruby_block 'assert broker and zookeeper lists are correct' do
       node.default['kafka']['server.properties']['zookeeper.connect'] = node['kafka']['zookeepers'].to_a.join ','
     end
 
-    raise "Unable to run kafka::default : \n -#{errors.join "\n -"}]\n" unless errors.empty?
+    # Raise an exception if there are any problems
+    raise "Unable to run kafka::default : \n  -#{errors.join "\n  -"}]\n" unless errors.empty?
   end
 end
-
-# Raise an exception if there are any problems
 
 # Set all default attributes that are built from other attributes
 node.default["kafka"]["install_dir"] = "#{node["kafka"]["base_dir"]}/kafka"
