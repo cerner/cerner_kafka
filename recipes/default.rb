@@ -196,9 +196,11 @@ end
     owner node["kafka"]["user"]
     group node["kafka"]["group"]
     mode  00755
-    variables({
-                :properties => node["kafka"][template_file].to_hash
-    })
+    variables(
+      lazy { 
+        { :properties => node["kafka"][template_file].to_hash }
+      }
+    )
     notifies :restart, "service[kafka]"
   end
 end
