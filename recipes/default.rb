@@ -6,33 +6,38 @@
 errors = Array.new
 
 # Verify either node["kafka"]["brokers"] or node["kafka"]["server.properties"]["broker.id"] is set properly
-if (node['kafka']['brokers'].to_a.empty?) && !node['kafka']['server.properties'].has_key?('broker.id')
-  errors.push 'node[:kafka][:brokers] or node[:kafka][:server.properties][:broker.id] must be set properly'
-elsif !node['kafka']['server.properties'].has_key?('broker.id')
-  # Generate brokerId for Kafka (uses the index of the brokers list to figure out which ID this broker should have). We add 1 to ensure
-  # we have a positive (non zero) number
-  brokerId = ( node['kafka']['brokers'].to_a.index do |broker| 
-      broker == node["fqdn"] || broker == node["ipaddress"] || broker == node["hostname"]
+ruby_block 'assert broker and zookeeper lists are correct' do
+  block do
+    if (node['kafka']['brokers'].to_a.empty?) && !node['kafka']['server.properties'].has_key?('broker.id')
+      errors.push 'node[:kafka][:brokers] or node[:kafka][:server.properties][:broker.id] must be set properly'
+    elsif !node['kafka']['server.properties'].has_key?('broker.id')
+      # Generate brokerId for Kafka (uses the index of the brokers list to figure out which ID this broker should have). We add 1 to ensure
+      # we have a positive (non zero) number
+      brokerId = ( node['kafka']['brokers'].to_a.index do |broker| 
+          broker == node["fqdn"] || broker == node["ipaddress"] || broker == node["hostname"]
+        end
+      )
+      if brokerId.nil?
+        errors.push "Unable to find #{node['fqdn']}, #{node['ipaddress']} or "\
+                    "#{node['hostname']} in node[:kafka][:brokers] : #{node['kafka']['brokers']}"
+      else
+        brokerId += 1
+        node.default['kafka']['server.properties']['broker.id'] = brokerId
+      end
     end
-  )
-  if brokerId.nil?
-    errors.push "Unable to find #{node['fqdn']}, #{node['ipaddress']} or "\
-                "#{node['hostname']} in node[:kafka][:brokers] : #{node['kafka']['brokers']}"
-  else
-    brokerId += 1
-    node.default["kafka"]["server.properties"]["broker.id"] = brokerId
+
+    # Verify we have a list of zookeeper instances
+    if (node['kafka']['zookeepers'].to_a.empty?) && !node['kafka']['server.properties'].has_key?('zookeeper.connect')
+      errors.push 'node[:kafka][:zookeepers] or node[:kafka][:server.properties][:zookeeper.connect] was not set properly'
+    elsif !node['kafka']['server.properties'].has_key?('zookeeper.connect')
+      node.default['kafka']['server.properties']['zookeeper.connect'] = node['kafka']['zookeepers'].to_a.join ','
+    end
+
+    raise "Unable to run kafka::default : \n -#{errors.join "\n -"}]\n" unless errors.empty?
   end
 end
 
-# Verify we have a list of zookeeper instances
-if (node["kafka"]["zookeepers"].to_a.empty?) && !node["kafka"]["server.properties"].has_key?("zookeeper.connect")
-  errors.push "node[:kafka][:zookeepers] or node[:kafka][:server.properties][:zookeeper.connect] was not set properly"
-elsif !node["kafka"]["server.properties"].has_key?("zookeeper.connect")
-  node.default["kafka"]["server.properties"]["zookeeper.connect"] = node["kafka"]["zookeepers"].to_a.join ","
-end
-
 # Raise an exception if there are any problems
-return "Unable to run kafka::default : \n -#{errors.join "\n -"}]\nContinuing" unless errors.empty?
 
 # Set all default attributes that are built from other attributes
 node.default["kafka"]["install_dir"] = "#{node["kafka"]["base_dir"]}/kafka"
