@@ -13,6 +13,11 @@ describe 'cerner_kafka::default' do
     end
   end
 
+  it 'runs the code block to assure that broker and zookeeper node attributes are set' do
+    chef_run.converge(described_recipe)
+    expect(chef_run).to run_ruby_block('attribute_assertions')
+  end
+
   it 'use zookeepers and brokers attributes' do
     chef_run.converge(described_recipe)
     expect(chef_run).to start_service('kafka')
@@ -46,26 +51,6 @@ describe 'cerner_kafka::default' do
 
     chef.converge(described_recipe)
     expect(chef).to start_service('kafka')
-  end
-
-  it 'no brokers or broker.id attribute set' do
-    chef = ChefSpec::SoloRunner.new do |node|
-      node.set['kafka']['zookeepers'] = ['localhost:2181']
-    end
-
-    expect {
-      chef.converge(described_recipe)
-    }.to raise_error(RuntimeError)
-  end
-
-  it 'no zookeepers or zookeeper.connect attribute set' do
-    chef = ChefSpec::SoloRunner.new do |node|
-      node.set['kafka']['brokers'] = ['chefspec']
-    end
-
-    expect {
-      chef.converge(described_recipe)
-    }.to raise_error(RuntimeError)
   end
 
   context 'with version set to 0.8.0' do
