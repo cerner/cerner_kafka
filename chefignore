@@ -71,6 +71,7 @@ Procfile
 #############
 cookbooks/*
 tmp
+Berksfile.lock
 
 # Cookbooks #
 #############
@@ -92,3 +93,5 @@ Vagrantfile
 # Travis #
 ##########
 .travis.yml
+
+Gemfile.lock
