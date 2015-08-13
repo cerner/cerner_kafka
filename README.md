@@ -25,7 +25,7 @@ The true installations will land,
     | | - bin
     | | - kafka_1.2.3.jar
     | | - ...
-    
+
 While we provide a symbolic link to the convenient location,
 
     node["kafka"]["install_dir"] (defaults to /opt/kafka)
@@ -33,11 +33,11 @@ While we provide a symbolic link to the convenient location,
     | - bin
     | - kafka_1.2.3.jar
     | - ...
-    
+
 It will also create/setup a service which can be used to start/stop/restart kafka,
 
     service kafka [start|stop|restart|status]
-    
+
 We also link kafka's log directory to `/var/log/kafka` to make it easier to find kafka's logs.
 
 Usage
@@ -51,7 +51,7 @@ These are the requirements that need to be satisfied in order to get the cookboo
 
 If you don't fulfill the requirements the recipe will error out telling you what was missing.
 
-Additionally if you want to use a Zookeeper chroot with your kafka installation you can provide it by setting 
+Additionally if you want to use a Zookeeper chroot with your kafka installation you can provide it by setting
 `node["kafka"]["zookeeper_chroot"]`.
 
 The attributes,
@@ -67,13 +67,13 @@ Actually map to 'server.properties' settings,
 We do this mapping for you when you provide the `node["kafka"]["brokers"]` and `node["kafka"]["zookeepers"]`
 attributes.
 
-For the `node["kafka"]["brokers"]` => `node["kafka"]["server.properties"]["broker.id"]` mapping to work properly 
-all Chef nodes running the kafka recipe (and are part of the same Kafka cluster) must have the same list of 
-`node["kafka"]["brokers"]` and all broker hostnames must be in the same order. We determine the 
+For the `node["kafka"]["brokers"]` => `node["kafka"]["server.properties"]["broker.id"]` mapping to work properly
+all Chef nodes running the kafka recipe (and are part of the same Kafka cluster) must have the same list of
+`node["kafka"]["brokers"]` and all broker hostnames must be in the same order. We determine the
 `node["kafka"]["server.properties"]["broker.id"]` by using the index of Chef node's fqdn/hostname/ip in the
 list as the `node["kafka"]["server.properties"]["broker.id"]`.
 
-Using `node["kafka"]["brokers"]`, `node["kafka"]["zookeepers"]` and `node["kafka"]["zookeeper_chroot"]` attribtues are 
+Using `node["kafka"]["brokers"]`, `node["kafka"]["zookeepers"]` and `node["kafka"]["zookeeper_chroot"]` attribtues are
 the recommended way to setup your kafka cluster in Chef.
 
 Once all that is done you should be able to run the recipe without any problem.
@@ -88,8 +88,8 @@ There are basically two ways to configure these settings. The first way is via 3
  * `node["kafka"]["scala_version"]` : The scala version number associated with the kafka installation (default="2.9.2")
  * `node["kafka"]["version"]` : The version number associated with the kafka installation (default="0.8.1.1")
  * `node["kafka"]["download_url"]` : The base url used to download Kafka (default="https://archive.apache.org/dist/kafka")
- 
-With these 3 attributes we build the full url of the form 
+
+With these 3 attributes we build the full url of the form
 `#{node["kafka"]["download_url"]}/#{node["kafka"]["version"]}/kafka_#{node["kafka"]["scala_version"]}-#{node["kafka"]["version"]}.tgz`.
 
 This makes it easy to specify just a single change while still maintaining the rest of the URL.
@@ -115,14 +115,14 @@ Kafka uses different environment variables to configure the java settings for th
  * `KAFKA_GC_LOG_OPTS` : The options used to control GC logs (default="-Xloggc:$LOG_DIR/$GC_LOG_FILE_NAME -verbose:gc -XX:+PrintGCDetails -XX:+PrintGCDateStamps -XX:+PrintGCTimeStamps")
  * `KAFKA_OPTS` : Used for any generic JVM settings (default="")
 
-You can customize these environment variables (as well as any environment variable for the kafka user) using the 
+You can customize these environment variables (as well as any environment variable for the kafka user) using the
 attribute,
 
  * `node["kafka"]["env_vars"]` : A hash of environment variable names to their values to be set for the kafka user
 
 Consumer Offset Monitor
 -----------------------
- 
+
 The `kafka::offset_monitor` recipe will install the Kafka Consumer Offset Monitor application, which provides a
 web UI for monitoring various aspects of your Kafka cluster, including consumer processing lag.
 
@@ -159,7 +159,7 @@ This recipe creates a service which can be used to start/stop/restart the offset
     service kafka-offset-monitor [start|stop|restart|status]
 
 Log files are written to `kafka-offset-monitor.log` in `node["kafka"]["log_dir"]` (defaults to /var/log/kafka).
-    
+
 Attributes
 ----------
 
@@ -200,36 +200,15 @@ We have provided some simple integration tests for testing the cookbook.
 
 ### How to run tests
 
-To run the tests for this cookbook you must,
+To run the tests for this cookbook you must install [ChefDK](https://downloads.chef.io/chef-dk/).
 
- * Install [Ruby](http://www.ruby-lang.org/en/)
- * Install [Bundler](http://bundler.io/)
- * Install [VirtualBox](https://www.virtualbox.org/wiki/Downloads)
- * Install [Vagrant](http://www.vagrantup.com/) >= 1.5.2
- * Install [Vagrant Omnibus Plugin](https://github.com/schisamo/vagrant-omnibus)
- * Install [Vagrant Berkshelf Plugin](https://github.com/berkshelf/vagrant-berkshelf) - `vagrant plugin install vagrant-berkshelf`
+The unit tests are written with [rspec](http://rspec.info/) and [chefspec](https://github.com/sethvargo/chefspec).
+They can be run with `rspec`.
 
-In order to run tests you must have the development dependencies installed. You can do that by doing:
+The lint testing uses [Foodcritic](http://www.foodcritic.io/) and can be run with `foodcritic . -f any`.
 
-    bundle install
-
-The unit tests are written with [rspec](http://rspec.info/) and [chefspec](https://github.com/sethvargo/chefspec). 
-They can be run with:
-
-    rake unit_test
-
-The lint testing uses [Foodcritic](http://www.foodcritic.io/) and can be run with:
-
-    rake lint_test
-
-The integration tests are written with [test-kitchen](http://kitchen.ci/) and [serverspec](http://serverspec.org/). 
-They can be run with:
-
-    rake integration_test
-
-All tests can be run with:
-
-    rake test
+The integration tests are written with [test-kitchen](http://kitchen.ci/) and [serverspec](http://serverspec.org/).
+They can be run with `kitchen test`.
 
 Contributing
 ------------
@@ -239,7 +218,7 @@ This project is licensed under the Apache License, Version 2.0.
 When contributing to the project please add your name to the CONTRIBUTORS.txt file. Adding your name to the CONTRIBUTORS.txt file
 signifies agreement to all rights and reservations provided by the License.
 
-To contribute to the project execute a pull request through github. The pull request will be reviewed by the community and merged 
+To contribute to the project execute a pull request through github. The pull request will be reviewed by the community and merged
 by the project committers. Please attempt to conform to the test, code conventions, and code formatting standards if any
 are specified by the project before submitting a pull request.
 

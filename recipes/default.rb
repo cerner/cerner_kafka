@@ -51,8 +51,11 @@ node.default["kafka"]["log4j.properties"]["log4j.appender.requestAppender.File"]
 node.default["kafka"]["log4j.properties"]["log4j.appender.controllerAppender.File"] = File.join node["kafka"]["log_dir"], "controller.log"
 
 # Set default limits
-node.default["ulimit"]["users"][node["kafka"]["user"]]["filehandle_limit"] = 32768
-node.default["ulimit"]["users"][node["kafka"]["user"]]["process_limit"] = 1024
+
+# We currently ignore FC047 - http://www.foodcritic.io/#FC047) due to a bug in foodcritic giving false
+# positives (https://github.com/acrmp/foodcritic/issues/225)
+node.default["ulimit"]["users"][node["kafka"]["user"]]["filehandle_limit"] = 32768 # ~FC047
+node.default["ulimit"]["users"][node["kafka"]["user"]]["process_limit"] = 1024 # ~FC047
 
 # Build the binary_url from download_url, scala_version and version. This url is what we actually use to download the binary file
 node.default["kafka"]["binary_url"] = "#{node["kafka"]["download_url"]}/#{node["kafka"]["version"]}/kafka_#{node["kafka"]["scala_version"]}-#{node["kafka"]["version"]}.tgz"

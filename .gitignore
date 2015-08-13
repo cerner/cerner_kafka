@@ -19,3 +19,6 @@ vendor
 
 # Test-Kitchen
 .kitchen/*
+
+# Rbenv / RVM
+.ruby-version

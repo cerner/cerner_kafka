@@ -1,10 +1,13 @@
 source 'https://rubygems.org'
 
-group :development do
-  gem 'berkshelf'
-  gem 'test-kitchen'
-  gem 'kitchen-vagrant'
+group :travis do
   gem 'rspec'
   gem 'chefspec'
   gem 'foodcritic'
+end
+
+group :release do
+  gem 'stove'
+  gem 'rake'
+  gem 'octokit'
 end
