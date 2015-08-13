@@ -2,7 +2,7 @@
 require 'octokit'
 require 'yaml'
 require 'stove/rake_task'
-require 'stove/cokbook'
+require 'stove/cookbook'
 
 Stove::RakeTask.new
 
@@ -81,7 +81,7 @@ def cookbook_version
   cookbook.version
 end
 
-def update_cookbook_version version
+def update_cookbook_version new_version
   # Read in the metadata file
   metadata = IO.read(File.join(File.dirname(__FILE__), 'metadata.rb')).chomp
   version_with_name = VERSION_WITH_NAME_REGEX.match(metadata)[0]
@@ -92,11 +92,11 @@ def update_cookbook_version version
 
   File.open("metadata.rb", 'w') { |file|
     file.write metadata[0, index_to_version_info + index_to_version]
-    file.write "'#{version}'\n"
+    file.write "'#{new_version}'\n"
   }
 
   run_command "git add metadata.rb"
-  run_command "git commit -m 'Released #{version} and bumped version to #{new_version}'"
+  run_command "git commit -m 'Released #{cookbook_version} and bumped version to #{new_version}'"
   run_command "git push origin HEAD"
 end
 
