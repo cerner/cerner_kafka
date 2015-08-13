@@ -12,13 +12,13 @@ How to Release
  * Make sure a milestone has been created for the version (with name=version) and has issues set to it. Close the milestone when releasing.
  * Create an issue for the release, run the tests, include test evidence on the issue and get 2 +1s from committers.
  * Install everything needed for release by doing `bundle install --without travis --path vendor/bundle`
- * Add your supermarket login information if you haven't already `bundle exec stove login --username [USER] --key [SUPERMARKEY_KEY_PATH]`
+ * Add your supermarket login information if you haven't already `bundle exec stove login --username [USER] --key [SUPERMARKET_KEY_PATH]`
  * Then run the following command to release the cookbook `bundle exec rake release`
 
 The `release` rake task will,
 
  * Update the [Change Log](CHANGELOG.md) with the milestone for the release
- * Share the cookbook to [Chefs Supermarket](https://supermarket.getchef.com/dashboard)
+ * Share the cookbook to [Chef Supermarket](https://supermarket.chef.io)
  * Tag the cookbook with the current version
  * Bump the cookbook's version
 
