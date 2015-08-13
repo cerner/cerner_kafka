@@ -14,7 +14,7 @@ ruby_block 'assert broker and zookeeper lists are correct' do # ~FC014
     elsif !node['kafka']['server.properties'].has_key?('broker.id')
       # Generate brokerId for Kafka (uses the index of the brokers list to figure out which ID this broker should have). We add 1 to ensure
       # we have a positive (non zero) number
-      brokerId = ( node['kafka']['brokers'].to_a.index do |broker| 
+      brokerId = ( node['kafka']['brokers'].to_a.index do |broker|
           broker == node["fqdn"] || broker == node["ipaddress"] || broker == node["hostname"]
         end
       )
@@ -31,7 +31,9 @@ ruby_block 'assert broker and zookeeper lists are correct' do # ~FC014
     if (node['kafka']['zookeepers'].to_a.empty?) && !node['kafka']['server.properties'].has_key?('zookeeper.connect')
       errors.push 'node[:kafka][:zookeepers] or node[:kafka][:server.properties][:zookeeper.connect] was not set properly'
     elsif !node['kafka']['server.properties'].has_key?('zookeeper.connect')
-      node.default['kafka']['server.properties']['zookeeper.connect'] = node['kafka']['zookeepers'].to_a.join ','
+      zk_connect = node['kafka']['zookeepers'].to_a.join ','
+      zk_connect += node["kafka"]["zookeeper_chroot"] unless node["kafka"]["zookeeper_chroot"].nil?
+      node.default['kafka']['server.properties']['zookeeper.connect'] = zk_connect
     end
 
     # Raise an exception if there are any problems
@@ -198,7 +200,7 @@ end
     group node["kafka"]["group"]
     mode  00755
     variables(
-      lazy { 
+      lazy {
         { :properties => node["kafka"][template_file].to_hash }
       }
     )
