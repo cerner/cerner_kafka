@@ -29,7 +29,7 @@ start() {
   if [ -z "$FOUND_PID" ]; then
     su -l $USER -c "$START_CMD"
       
-    if [[ $? -ne 0 ]]; then
+    if [ $? -ne 0 ]; then
       echo "Error starting Kafka offset monitor"
       exit 1
     fi
@@ -46,9 +46,9 @@ stop() {
     echo "Kafka offset monitor is not running, nothing to stop"
   else
     echo "Attempting to shutdown Kafka offset monitor..."
-    kill -9 $FOUND_PID
+    kill -9 "$FOUND_PID"
  
-    if [[ $? -ne 0 ]]; then
+    if [ $? -ne 0 ]; then
       echo "Error stopping Kafka offset monitor"
       exit 1
     fi
@@ -67,7 +67,7 @@ status() {
 }
 
 findPid() {
-  FOUND_PID=`pgrep -u $USER -f $MAIN_CLASS`
+  FOUND_PID=$(pgrep -u $USER -f $MAIN_CLASS)
 }
 
 case "$1" in
