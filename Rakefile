@@ -4,6 +4,12 @@ require 'yaml'
 require 'stove/rake_task'
 require 'stove/cookbook'
 
+if ENV['GITHUB_API_TOKEN']
+  @octokit = Octokit::Client.new(:access_token => ENV['GITHUB_API_TOKEN'])
+else
+  @octokit = Octokit::Client.new
+end
+
 Stove::RakeTask.new
 
 VERSION_WITH_NAME_REGEX = /version\s*'\d+\.\d+\.\d+'/
@@ -46,7 +52,7 @@ task :release do
 end
 
 task :build_change_log do
-  closed_milestones = Octokit.milestones REPO, {:state => "closed"}
+  closed_milestones = @octokit.milestones REPO, {:state => "closed"}
 
   version_to_milestone = Hash.new
   versions = Array.new
@@ -141,7 +147,7 @@ def generate_milestone_markdown milestone
   strings.push "-" * title.length
   strings.push ""
 
-  issues = Octokit.issues REPO, {:milestone => milestone.number, :state => "closed"}
+  issues = @octokit.issues REPO, {:milestone => milestone.number, :state => "closed"}
 
   issues.each do |issue|
     strings.push "  * [#{issue_type issue}] [Issue-#{issue.number}](https://github.com/#{REPO}/issues/#{issue.number}) : #{issue.title}"
@@ -153,7 +159,7 @@ def generate_milestone_markdown milestone
 end
 
 def milestone version
-  closedMilestones = Octokit.milestones REPO, {:state => "closed"}
+  closedMilestones = @octokit.milestones REPO, {:state => "closed"}
 
   closedMilestones.each do |milestone|
     if milestone["title"] == version
@@ -161,7 +167,7 @@ def milestone version
     end
   end
 
-  openMilestones = Octokit.milestones REPO
+  openMilestones = @octokit.milestones REPO
 
   openMilestones.each do |milestone|
     if milestone["title"] == version
