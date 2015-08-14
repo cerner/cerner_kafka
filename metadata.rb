@@ -7,4 +7,4 @@ description       "Installs and configures a Kafka"
 depends 'java'
 depends 'ulimit'
 
-version           '1.1.0'
+version           '2.0.0'
