@@ -1,4 +1,4 @@
-# coding: UTF-8 
+# coding: UTF-8
 # Cookbook Name:: cerner_kafka
 # Attributes:: default
 

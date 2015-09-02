@@ -50,6 +50,10 @@ node.default["kafka"]["log4j.properties"]["log4j.appender.stateChangeAppender.Fi
 node.default["kafka"]["log4j.properties"]["log4j.appender.requestAppender.File"] = File.join node["kafka"]["log_dir"], "kafka-request.log"
 node.default["kafka"]["log4j.properties"]["log4j.appender.controllerAppender.File"] = File.join node["kafka"]["log_dir"], "controller.log"
 
+# Set Log file for kafka init script
+node.default["kafka"]["initservice"]["stdout"] = node["kafka"]["initservice"]["stdout"] || File.join node["kafka"]["log_dir"], "kafka_init_stdout.log"
+node.default["kafka"]["initservice"]["stderr"] = node["kafka"]["initservice"]["stderr"] || File.join node["kafka"]["log_dir"], "kafka_init_stderr.log"
+
 # Set default limits
 
 # We currently ignore FC047 - http://www.foodcritic.io/#FC047) due to a bug in foodcritic giving false

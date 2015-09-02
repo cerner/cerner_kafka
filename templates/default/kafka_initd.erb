@@ -33,7 +33,7 @@ STOP_SERVER_CMD="<%= node["kafka"]["install_dir"] %>/bin/kafka-server-stop.sh >>
 
 start() {
   findPid
-  
+
   if [ "" = "$FOUND_PID" ]; then
     su -l $USER -c "$START_SERVER_CMD"
       
@@ -41,9 +41,9 @@ start() {
       echo "Error starting Kafka"
       exit 1
     fi
-      
+
     echo "Kafka successfully started"
-      
+
   else
     echo "Kafka is already running"
   fi
@@ -54,17 +54,17 @@ stop() {
   if [ -z "$FOUND_PID" ]; then
     echo "Kafka is not running, nothing to stop"
   else
-    
-    while [ -n "$FOUND_PID" ]; 
+
+    while [ -n "$FOUND_PID" ];
     do
       echo "Attempting to shutdown Kafka..."
       su -l $USER -c "$STOP_SERVER_CMD"
-      
+
       if [ $? -ne 0 ]; then
         echo "Error stopping Kafka"
         exit 1
       fi
-      
+
       sleep $SLEEP_TIME
       CURRENT_WAIT=$CURRENT_WAIT+$SLEEP_TIME
       if [ $CURRENT_WAIT -gt $TIMEOUT ]; then
@@ -73,9 +73,9 @@ stop() {
       fi
       findPid
     done
-      
+
     echo "Stopped Kafka"
-      
+
   fi
 }
 
@@ -84,7 +84,7 @@ status() {
   if [ -z "$FOUND_PID" ]; then
     echo "Kafka is not running" ; exit 1
   else
-    echo "Kafka is running : $FOUND_PID" 
+    echo "Kafka is running : $FOUND_PID"
   fi
 }
 
