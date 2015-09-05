@@ -48,7 +48,7 @@ node.default["kafka"]['mirror_maker']["mirror-log4j.properties"]["log4j.appender
 include_recipe "cerner_kafka::install"
 
 # Configure kafka mirror maker properties
-node['kafka']['mirror_maker']['mirror_sources'].concat(%w[mirror_target.properties mirror-log4j.properties]).each do |template_file|
+(node['kafka']['mirror_maker']['mirror_sources'] + %w[mirror_target.properties mirror-log4j.properties]).each do |template_file|
   template "#{node["kafka"]["install_dir"]}/config/#{template_file}" do
     source  "key_equals_value.erb"
     owner node["kafka"]["user"]
