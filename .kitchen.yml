@@ -18,6 +18,9 @@ platforms:
 
 suites:
 - name: default
+  driver:
+    network:
+      - ["private_network", {ip: "10.10.10.10"}]
   run_list:  
   # We only include apt because of an issue installing java where ubuntu 
   # requires an apt-get update in order to successfully run
@@ -44,3 +47,38 @@ suites:
       offset_monitor:
         port: 8088
       shutdown_timeout: 35
+- name: mirror
+  driver:
+    network:
+      - ["private_network", {ip: "10.10.10.11"}]
+  run_list:  
+  # We only include apt because of an issue installing java where ubuntu 
+  # requires an apt-get update in order to successfully run
+  - recipe[apt]
+  - recipe[apache_zookeeper]
+  - recipe[cerner_kafka]
+  - recipe[cerner_kafka::offset_monitor]
+  - recipe[cerner_kafka::mirror_maker]
+  attributes: 
+    kafka:
+      zookeepers: 
+        - localhost:2181
+      lib_jars:
+        - http://search.maven.org/remotecontent?filepath=io/dropwizard/metrics/metrics-logback/3.1.0/metrics-logback-3.1.0.jar
+      server.properties: 
+        default.replication.factor: 1
+        broker.id: 1
+        bogus.for.testing: server
+        log.dirs: /var/kafka/data1,/var/kafka/data2,/var/kafka/data3
+      log4j.properties:
+        bogus.for.testing: log4j
+      env_vars:
+        KAFKA_HEAP_OPTS: '"-Xmx256m -Xms256m"'
+        BOGUS_VAR: TEST_VALUE
+      offset_monitor:
+        port: 8088
+      shutdown_timeout: 35
+      mirror_maker:
+        mirror_source1.properties:
+          zookeeper.connect:
+            10.10.10.10:2181

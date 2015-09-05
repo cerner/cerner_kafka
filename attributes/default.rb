@@ -68,3 +68,57 @@ default["kafka"]["offset_monitor"]["port"] = "8080"
 default["kafka"]["offset_monitor"]["db_name"] = "offset_monitor"
 default["kafka"]["offset_monitor"]["refresh"] = "15.minutes"
 default["kafka"]["offset_monitor"]["retain"] = "7.days"
+
+# mirror maker config
+default["kafka"]["mirror_maker"]["whitelist"] = ".*"
+default["kafka"]["mirror_maker"]["blacklist"] = nil
+default["kafka"]["mirror_maker"]["streams"] = 2
+default["kafka"]["mirror_maker"]["mirror_target.properties"]["metadata.broker.list"] = "localhost:6667"
+default["kafka"]["mirror_maker"]["mirror_target.properties"]["producer.type"] = "sync"
+default["kafka"]["mirror_maker"]["mirror_target.properties"]["compression.codec"] = "none"
+default["kafka"]["mirror_maker"]["mirror_target.properties"]["serializer.class"] = "kafka.serializer.DefaultEncoder"
+default["kafka"]["mirror_maker"]["mirror_sources"] = ["mirror_source1.properties"]
+default["kafka"]["mirror_maker"]["mirror_source1.properties"]["zookeeper.connect"] = "127.0.0.1:2181"
+default["kafka"]["mirror_maker"]["mirror_source1.properties"]["zookeeper.connection.timeout.ms"] = 1000000
+default["kafka"]["mirror_maker"]["mirror_source1.properties"]["group.id"] = "mirror-consumer-group"
+default["kafka"]["mirror_maker"]["mirror_source1.properties"]["consumer.timeout.ms"] = 5000
+
+# Set Log file for kafka init script stdout/stderr
+default["kafka"]["mirror_maker"]["service"]["stdout"] = File.join node["kafka"]["log_dir"], "kafka_mirror_maker_init_stdout.log"
+default["kafka"]["mirror_maker"]["service"]["stderr"] = File.join node["kafka"]["log_dir"], "kafka_mirror_maker_init_stderr.log"
+
+default["kafka"]["mirror_maker"]["env_vars"]["JMX_PORT"] = "9998"
+default["kafka"]["mirror_maker"]["env_vars"]["KAFKA_HEAP_OPTS"] = "\"-Xmx1G -Xms1G\""
+default["kafka"]["mirror_maker"]["env_vars"]["KAFKA_JVM_PERFORMANCE_OPTS"] = "\"-XX:PermSize=48m -XX:MaxPermSize=48m -XX:+UseG1GC -XX:MaxGCPauseMillis=20 -XX:InitiatingHeapOccupancyPercent=35\""
+
+# mirror maker Log4J config
+default["kafka"]['mirror_maker']["mirror-log4j.properties"]["log4j.rootLogger"] = "INFO, stdout "
+default["kafka"]['mirror_maker']["mirror-log4j.properties"]["log4j.appender.stdout"] = "org.apache.log4j.ConsoleAppender"
+default["kafka"]['mirror_maker']["mirror-log4j.properties"]["log4j.appender.stdout.layout"] = "org.apache.log4j.PatternLayout"
+default["kafka"]['mirror_maker']["mirror-log4j.properties"]["log4j.appender.stdout.layout.ConversionPattern"] = "[%d] %p %m (%c)%n"
+default["kafka"]['mirror_maker']["mirror-log4j.properties"]["log4j.appender.kafkaAppender"] = "org.apache.log4j.RollingFileAppender"
+default["kafka"]['mirror_maker']["mirror-log4j.properties"]["log4j.appender.kafkaAppender.MaxBackupIndex"] = "20"
+default["kafka"]['mirror_maker']["mirror-log4j.properties"]["log4j.appender.kafkaAppender.layout"] = "org.apache.log4j.PatternLayout"
+default["kafka"]['mirror_maker']["mirror-log4j.properties"]["log4j.appender.kafkaAppender.layout.ConversionPattern"] = "%d{ISO8601} %p %c: %m%n"
+default["kafka"]['mirror_maker']["mirror-log4j.properties"]["log4j.appender.stateChangeAppender"] = "org.apache.log4j.RollingFileAppender"
+default["kafka"]['mirror_maker']["mirror-log4j.properties"]["log4j.appender.stateChangeAppender.MaxBackupIndex"] = "20"
+default["kafka"]['mirror_maker']["mirror-log4j.properties"]["log4j.appender.stateChangeAppender.layout"] = "org.apache.log4j.PatternLayout"
+default["kafka"]['mirror_maker']["mirror-log4j.properties"]["log4j.appender.stateChangeAppender.layout.ConversionPattern"] = "%d{ISO8601} %p %c: %m%n"
+default["kafka"]['mirror_maker']["mirror-log4j.properties"]["log4j.appender.requestAppender"] = "org.apache.log4j.RollingFileAppender"
+default["kafka"]['mirror_maker']["mirror-log4j.properties"]["log4j.appender.requestAppender.MaxBackupIndex"] = "20"
+default["kafka"]['mirror_maker']["mirror-log4j.properties"]["log4j.appender.requestAppender.layout"] = "org.apache.log4j.PatternLayout"
+default["kafka"]['mirror_maker']["mirror-log4j.properties"]["log4j.appender.requestAppender.layout.ConversionPattern"] = "%d{ISO8601} %p %c: %m%n"
+default["kafka"]['mirror_maker']["mirror-log4j.properties"]["log4j.appender.controllerAppender"] = "org.apache.log4j.RollingFileAppender"
+default["kafka"]['mirror_maker']["mirror-log4j.properties"]["log4j.appender.controllerAppender.MaxBackupIndex"] = "20"
+default["kafka"]['mirror_maker']["mirror-log4j.properties"]["log4j.appender.controllerAppender.layout"] = "org.apache.log4j.PatternLayout"
+default["kafka"]['mirror_maker']["mirror-log4j.properties"]["log4j.appender.controllerAppender.layout.ConversionPattern"] = "%d{ISO8601} %p %c: %m%n"
+default["kafka"]['mirror_maker']["mirror-log4j.properties"]["log4j.logger.kafka"] = "INFO, kafkaAppender"
+default["kafka"]['mirror_maker']["mirror-log4j.properties"]["log4j.logger.kafka.network.RequestChannel$"] = "INFO, requestAppender"
+default["kafka"]['mirror_maker']["mirror-log4j.properties"]["log4j.additivity.kafka.network.RequestChannel$"] = "false"
+default["kafka"]['mirror_maker']["mirror-log4j.properties"]["log4j.logger.kafka.request.logger"] = "INFO, requestAppender"
+default["kafka"]['mirror_maker']["mirror-log4j.properties"]["log4j.additivity.kafka.request.logger"] = "false"
+default["kafka"]['mirror_maker']["mirror-log4j.properties"]["log4j.logger.kafka.controller"] = "INFO, controllerAppender"
+default["kafka"]['mirror_maker']["mirror-log4j.properties"]["log4j.additivity.kafka.controller"] = "false"
+default["kafka"]['mirror_maker']["mirror-log4j.properties"]["log4j.logger.state.change.logger"] = "INFO, stateChangeAppender"
+default["kafka"]['mirror_maker']["mirror-log4j.properties"]["log4j.additivity.state.change.logger"] = "false"
+
