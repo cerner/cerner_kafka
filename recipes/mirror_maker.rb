@@ -11,10 +11,11 @@ ruby_block 'assert mirror maker config is correct' do # ~FC014
   block do
     # Sources
     if node['kafka']['mirror_maker']['mirror_sources'].to_a.empty?
-      errors.push 'node[:mirror_maker][:mirror_sources]  must not be empty'
+      errors.push 'node[:kafka][:mirror_maker][:mirror_sources]  must not be empty'
     else
-      node['kafka']['mirror_maker']['mirror_sources'].each do |c|
-        #if node['kafka']['mirror_maker'][c].nil?
+      srcs = node['kafka']['mirror_maker']['mirror_sources']
+      srcs.each do |c|
+        warn c
         if !node['kafka']['mirror_maker'].has_key?(c)
           errors.push 'node[:kafka][:mirror_maker][:' + c + '] entry in mirror_sources, but does not exist'
         else 
