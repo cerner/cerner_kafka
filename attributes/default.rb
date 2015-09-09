@@ -81,7 +81,7 @@ default["kafka"]["mirror_maker"]["mirror_sources"] = ["mirror_source1.properties
 default["kafka"]["mirror_maker"]["mirror_source1.properties"]["zookeeper.connect"] = "127.0.0.1:2181"
 default["kafka"]["mirror_maker"]["mirror_source1.properties"]["zookeeper.connection.timeout.ms"] = 1000000
 default["kafka"]["mirror_maker"]["mirror_source1.properties"]["group.id"] = "mirror-consumer-group"
-default["kafka"]["mirror_maker"]["mirror_source1.properties"]["consumer.timeout.ms"] = 5000
+default["kafka"]["mirror_maker"]["mirror_source1.properties"]["consumer.timeout.ms"] = 1000000
 
 # Set Log file for kafka init script stdout/stderr
 default["kafka"]["mirror_maker"]["service"]["stdout"] = File.join node["kafka"]["log_dir"], "kafka_mirror_maker_init_stdout.log"
