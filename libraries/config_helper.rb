@@ -27,7 +27,7 @@ def set_broker_id
                      )
     else
       node.default['kafka']['server.properties']['broker.id'] = broker_id + 1
-      Chef::Log.error("SET BROKER!! #{node['kafka']['server.properties']['broker.id']}")
+      Chef::Log.debug("BROKER SET: #{node['kafka']['server.properties']['broker.id']}")
       return
     end
   end
@@ -45,7 +45,7 @@ def set_zookeeper_connect
   end
 
   if node['kafka']['zookeepers'].nil?
-    Chef::Log.error(
+    Chef::Log.info(
       "node['kafka']['zookeepers'] or "\
       "node['kafka']['server.properties']['zookeepers.connect'] must be set properly"
     )
