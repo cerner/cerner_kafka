@@ -1,4 +1,4 @@
-# coding: UTF-8 
+# coding: UTF-8
 # Cookbook Name:: cerner_kafka
 # Attributes:: default
 
@@ -27,13 +27,14 @@ default["kafka"]["env_vars"]["KAFKA_HEAP_OPTS"] = "\"-Xmx4G -Xms4G\""
 default["kafka"]["env_vars"]["KAFKA_JVM_PERFORMANCE_OPTS"] = "\"-XX:PermSize=48m -XX:MaxPermSize=48m -XX:+UseG1GC -XX:MaxGCPauseMillis=20 -XX:InitiatingHeapOccupancyPercent=35\""
 default["kafka"]["lib_jars"] = []
 
+default["kafka"]["logrotate"]["path"] = [node["kafka"]["service"]["stdout"], node["kafka"]["service"]["stderr"]]
+default["kafka"]["logrotate"]["frequency"] = 'daily'
+default["kafka"]["logrotate"]["rotate"] = 5
+
 default["kafka"]["server.properties"]["log.dirs"] = "/tmp/kafka-logs"
 
 # Log4J config
-default["kafka"]["log4j.properties"]["log4j.rootLogger"] = "INFO, stdout "
-default["kafka"]["log4j.properties"]["log4j.appender.stdout"] = "org.apache.log4j.ConsoleAppender"
-default["kafka"]["log4j.properties"]["log4j.appender.stdout.layout"] = "org.apache.log4j.PatternLayout"
-default["kafka"]["log4j.properties"]["log4j.appender.stdout.layout.ConversionPattern"] = "[%d] %p %m (%c)%n"
+default["kafka"]["log4j.properties"]["log4j.rootLogger"] = "INFO"
 default["kafka"]["log4j.properties"]["log4j.appender.kafkaAppender"] = "org.apache.log4j.RollingFileAppender"
 default["kafka"]["log4j.properties"]["log4j.appender.kafkaAppender.MaxBackupIndex"] = "20"
 default["kafka"]["log4j.properties"]["log4j.appender.kafkaAppender.layout"] = "org.apache.log4j.PatternLayout"

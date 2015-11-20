@@ -6,5 +6,6 @@ description       "Installs and configures a Kafka"
 
 depends 'java'
 depends 'ulimit'
+depends 'logrotate'
 
 version           '2.0.0'
