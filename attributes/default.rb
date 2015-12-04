@@ -5,8 +5,8 @@
 default["kafka"]["user"] = "kafka"
 default["kafka"]["group"] = "kafka"
 
-default["kafka"]["scala_version"] = "2.9.2"
-default["kafka"]["version"] = "0.8.1.1"
+default["kafka"]["scala_version"] = "2.11"
+default["kafka"]["version"] = "0.9.0.0"
 default["kafka"]["download_url"] = "https://archive.apache.org/dist/kafka"
 
 default["kafka"]["base_dir"]  = "/opt"
@@ -31,7 +31,7 @@ default["kafka"]["logrotate"]["path"] = [node["kafka"]["service"]["stdout"], nod
 default["kafka"]["logrotate"]["frequency"] = 'daily'
 default["kafka"]["logrotate"]["rotate"] = 5
 
-default["kafka"]["server.properties"]["log.dirs"] = "/tmp/kafka-logs"
+default["kafka"]["server.properties"] = {}
 
 # Log4J config
 default["kafka"]["log4j.properties"]["log4j.rootLogger"] = "INFO"
@@ -62,7 +62,7 @@ default["kafka"]["log4j.properties"]["log4j.logger.state.change.logger"] = "INFO
 default["kafka"]["log4j.properties"]["log4j.additivity.state.change.logger"] = "false"
 
 #Offset monitor config
-default["kafka"]["offset_monitor"]["url"] = "https://github.com/quantifind/KafkaOffsetMonitor/releases/download/v0.2.0/KafkaOffsetMonitor-assembly-0.2.0.jar"
+default["kafka"]["offset_monitor"]["url"] = "https://github.com/quantifind/KafkaOffsetMonitor/releases/download/v0.2.1/KafkaOffsetMonitor-assembly-0.2.1.jar"
 default["kafka"]["offset_monitor"]["main_class"] = "com.quantifind.kafka.offsetapp.OffsetGetterWeb"
 default["kafka"]["offset_monitor"]["port"] = "8080"
 default["kafka"]["offset_monitor"]["db_name"] = "offset_monitor"

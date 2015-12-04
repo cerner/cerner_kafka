@@ -12,7 +12,7 @@ describe service('kafka') do
 end
 
 # Kafka Broker API
-describe port(6667) do
+describe port(9092) do
   it { should be_listening }
 end
 
@@ -46,27 +46,10 @@ describe file('/etc/kafka') do
   it { should be_linked_to '/opt/kafka/config' }
 end
 
-['/var/kafka/data1', '/var/kafka/data2', '/var/kafka/data3'].each do |log_dir|
-  describe file(log_dir) do
-    it { should be_directory }
-    it { should be_owned_by 'kafka' }
-    it { should be_grouped_into 'kafka' }
-  end
-end
-
 describe file('/etc/kafka') do
   it { should be_directory }
   it { should be_linked_to '/opt/kafka/config' }
 end
-
-['/var/kafka/data1', '/var/kafka/data2', '/var/kafka/data3'].each do |log_dir|
-  describe file(log_dir) do
-    it { should be_directory }
-    it { should be_owned_by 'kafka' }
-    it { should be_grouped_into 'kafka' }
-  end
-end
-
 
 describe 'kafka broker' do
 
@@ -99,7 +82,7 @@ describe 'kafka broker' do
 
   it 'should be able to create a topic' do
     # Pick a random topic so if we re-run the tests on the same VM it won't fail with 'topic already created'
-    topicName = "testNewTopic_" + rand(100000).to_s
+    topicName = "testNewTopic-" + rand(100000).to_s
 
     createOutput = `/opt/kafka/bin/kafka-topics.sh --create --topic #{topicName} --partitions 1 --replication-factor 1 --zookeeper localhost:2181 2> /dev/null`
     expect(createOutput).to include("Created topic")
@@ -109,8 +92,8 @@ describe 'kafka broker' do
   end
 
   it 'should be able to read/write from a topic' do
-    topic = "superTopic_" + rand(100000).to_s
-    message = "super secret message"
+    topic = "superTopic-" + rand(100000).to_s
+    group = "group-" + rand(100000).to_s
 
     # Ensure the topic is created before having the consumer listen for it
     Kernel.system "/opt/kafka/bin/kafka-topics.sh --create --topic #{topic} --partitions 1 --replication-factor 1 --zookeeper localhost:2181 2> /dev/null"
@@ -118,22 +101,20 @@ describe 'kafka broker' do
     # The consumer command allows a user to 'listen' for messages on the topic and write them to STDOUT as they come in
     # In this case we are re-directing STDOUT to a file so we can read later
     # We also run this as a background process so we can also start the producer
-    Kernel.system "/opt/kafka/bin/kafka-console-consumer.sh --zookeeper localhost:2181 --whitelist #{topic} >> /tmp/consumer.out 2>&1 &"
+    Kernel.system "/opt/kafka/bin/kafka-verifiable-consumer.sh --broker-list localhost:9092 --topic #{topic} --group-id #{group} >> /tmp/consumer.out 2>&1 &"
+
+    # Give consumer 5s to start up
+    sleep 5
 
     # The producer is a command that allows a user to write input to the console as 'messages' to the topic, separated by new line characters
     # In this case we run the command and write the same message several times over 5s in an attempt to ensure the consumer saw the message
-    IO.popen("/opt/kafka/bin/kafka-console-producer.sh --topic #{topic} --broker-list localhost:6667 2> /dev/null", mode='r+') do |io|
-      writes = 5
-      while writes > 0
-        io.write message + "\n"
-        writes = writes - 1
-        sleep 1
-      end
-      io.close_write
-    end
+    Kernel.system "/opt/kafka/bin/kafka-verifiable-producer.sh --broker-list localhost:9092 --topic #{topic} --max-messages 1"
+
+    # Give consumer 5s to process messages
+    sleep 5
 
     # Ensure consumer processes are stopped
-    consumerPids = `ps -ef | grep kafka.consumer.ConsoleConsumer | grep -v grep | awk '{print $2}'`
+    consumerPids = `ps -ef | grep org.apache.kafka.tools.VerifiableConsumer | grep -v grep | awk '{print $2}'`
     consumerPids.split("\n").each do |pid|
       Process.kill 9, pid.to_i
     end
@@ -141,8 +122,8 @@ describe 'kafka broker' do
     # Read the consumer's STDOUT file
     consumerOutput = IO.read("/tmp/consumer.out")
 
-    # Verify the consumer saw at least 1 message
-    expect(consumerOutput).to include(message)
+    # Verify the consumer saw a 1 message
+    expect(consumerOutput).to include('"name":"records_consumed"')
 
   end
 

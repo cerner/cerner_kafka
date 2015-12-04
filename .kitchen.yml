@@ -18,24 +18,25 @@ platforms:
 
 suites:
 - name: default
-  run_list:  
-  # We only include apt because of an issue installing java where ubuntu 
+  run_list:
+  # We only include apt because of an issue installing java where ubuntu
   # requires an apt-get update in order to successfully run
   - recipe[apt]
   - recipe[apache_zookeeper]
   - recipe[cerner_kafka]
   - recipe[cerner_kafka::offset_monitor]
-  attributes: 
+  attributes:
+    java:
+      # Kafka 0.9 require java 7 or higher
+      jdk_version: 7
     kafka:
-      zookeepers: 
+      zookeepers:
         - localhost:2181
       lib_jars:
         - http://search.maven.org/remotecontent?filepath=io/dropwizard/metrics/metrics-logback/3.1.0/metrics-logback-3.1.0.jar
-      server.properties: 
+      server.properties:
         default.replication.factor: 1
-        broker.id: 1
         bogus.for.testing: server
-        log.dirs: /var/kafka/data1,/var/kafka/data2,/var/kafka/data3
       log4j.properties:
         bogus.for.testing: log4j
       env_vars:
