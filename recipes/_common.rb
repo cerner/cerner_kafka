@@ -23,7 +23,22 @@ template "/home/#{node["kafka"]["user"]}/.bash_profile" do
   owner node["kafka"]["user"]
   group node["kafka"]["group"]
   mode  00755
-  #notifies :restart, "service[kafka]"
+  notifies :run, 'ruby_block[restart_kafka_svcs]'
+end
+
+# Restart any kafka services affected by bash profile change
+ruby_block 'restart_kafka_svcs' do
+  %w[kafka kafka-mirror-maker kafka-offset-monitor].each do |svc|
+    block do
+      begin
+        r = resources(service: svc)
+        r.action(:restart)
+      rescue Chef::Exceptions::ResourceNotFound
+        # Do nothing
+      end
+    end
+    action :nothing
+  end
 end
 
 # Ensure the Kafka log directory exists
