@@ -12,10 +12,9 @@ describe service('kafka-mirror-maker') do
 end
 
 # Kafka mirror JMX
-# Not yet enabled in launcher
-#describe port(9999) do
-#  it { should be_listening }
-#end
+describe port(9998) do
+  it { should be_listening }
+end
 
 describe file('/opt/kafka/config/mirror_target.properties') do
   it { should be_file }
