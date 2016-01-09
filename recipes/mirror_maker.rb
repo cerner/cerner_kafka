@@ -35,7 +35,7 @@ ruby_block 'assert mirror maker config is correct' do # ~FC014
     end
 
     # Raise an exception if there are any problems
-    raise "Unable to run kafka::default : \n  -#{errors.join "\n  -"}]\n" unless errors.empty?
+    raise "Unable to run kafka::mirror_maker: \n  -#{errors.join "\n  -"}]\n" unless errors.empty?
   end
 end
 
