@@ -18,12 +18,16 @@ CURRENT_WAIT=0
 TIMEOUT=<%= node["kafka"]["shutdown_timeout"] %>
 KAFKA_MAIN=kafka.tools.MirrorMaker
 
-# Setup JMX port environment variable, if set
-<% if !node["kafka"]["mirror_maker"]["env_vars"]["JMX_PORT"].nil? and !node["kafka"]["mirror_maker"]["env_vars"]["JMX_PORT"].empty? -%>
-SETUP_ENV="env JMX_PORT=<%= node["kafka"]["mirror_maker"]["env_vars"]["JMX_PORT"] %>"
-<% else -%>
+# build env string.
 SETUP_ENV=""
+<% node['kafka']['mirror_maker']['env_vars'].keys.each do |evar| -%>
+<% if !node["kafka"]["mirror_maker"]["env_vars"][evar].nil? and !node["kafka"]["mirror_maker"]["env_vars"][evar].empty? -%>
+SETUP_ENV="$SETUP_ENV <%= evar %>=<%= node["kafka"]["mirror_maker"]["env_vars"]["#{evar}"] %>"
 <% end -%>
+<% end -%>
+if [ "" -ne "$SETUP_ENV" ]; then
+  SETUP_ENV="env $SETUP_ENV"
+fi
 
 MIRROR_PARAMS="\
 <% node['kafka']['mirror_maker']['mirror_sources'].each do |src| %>
