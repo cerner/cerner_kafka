@@ -41,9 +41,6 @@ end
 
 # Tells log4j to write logs into the /var/log/kafka directory
 node.default["kafka"]['mirror_maker']["mirror-log4j.properties"]["log4j.appender.kafkaAppender.File"] = File.join node["kafka"]["log_dir"], "mirror-server.log"
-node.default["kafka"]['mirror_maker']["mirror-log4j.properties"]["log4j.appender.stateChangeAppender.File"] = File.join node["kafka"]["log_dir"], "mirror-state-change.log"
-node.default["kafka"]['mirror_maker']["mirror-log4j.properties"]["log4j.appender.requestAppender.File"] = File.join node["kafka"]["log_dir"], "mirror-kafka-request.log"
-node.default["kafka"]['mirror_maker']["mirror-log4j.properties"]["log4j.appender.controllerAppender.File"] = File.join node["kafka"]["log_dir"], "mirror-controller.log"
 
 include_recipe "cerner_kafka::install"
 
