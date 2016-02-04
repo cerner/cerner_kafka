@@ -22,10 +22,10 @@ KAFKA_MAIN=kafka.tools.MirrorMaker
 SETUP_ENV=""
 <% node['kafka']['mirror_maker']['env_vars'].keys.each do |evar| -%>
 <% if !node["kafka"]["mirror_maker"]["env_vars"][evar].nil? and !node["kafka"]["mirror_maker"]["env_vars"][evar].empty? -%>
-SETUP_ENV="$SETUP_ENV <%= evar %>=<%= node["kafka"]["mirror_maker"]["env_vars"][evar] %>"
+SETUP_ENV="$SETUP_ENV <%= evar %>=\"<%= node["kafka"]["mirror_maker"]["env_vars"][evar] %>\""
 <% end -%>
 <% end -%>
-if [ "" -ne "$SETUP_ENV" ]; then
+if [ -n "$SETUP_ENV" ]; then
   SETUP_ENV="env $SETUP_ENV"
 fi
 

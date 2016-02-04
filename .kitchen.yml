@@ -42,7 +42,7 @@ suites:
       log4j.properties:
         bogus.for.testing: log4j
       env_vars:
-        KAFKA_HEAP_OPTS: '"-Xmx256m -Xms256m"'
+        KAFKA_HEAP_OPTS: '-Xmx256m -Xms256m'
         BOGUS_VAR: TEST_VALUE
       offset_monitor:
         port: 8088
@@ -73,12 +73,11 @@ suites:
       log4j.properties:
         bogus.for.testing: log4j
       env_vars:
-        KAFKA_HEAP_OPTS: '"-Xmx256m -Xms256m"'
+        KAFKA_HEAP_OPTS: '-Xmx256m -Xms256m'
         BOGUS_VAR: TEST_VALUE
       offset_monitor:
         port: 8088
       shutdown_timeout: 35
       mirror_maker:
         mirror_source1.properties:
-          zookeeper.connect:
-            10.10.10.10:2181
+          zookeeper.connect: 10.10.10.10:2181
