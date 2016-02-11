@@ -19,19 +19,11 @@ ruby_block 'assert mirror maker config is correct' do # ~FC014
         if !node['kafka']['mirror_maker'].has_key?(c)
           errors.push 'node[:kafka][:mirror_maker][:' + c + '] entry in mirror_sources, but does not exist'
         else 
-          if !node['kafka']['mirror_maker'][c].has_key?('zookeeper.connect')
-            errors.push 'node[:kafka][:mirror_maker][:' + c + '] entry must have zookeeper.connect attribute'
-          end
           if !node['kafka']['mirror_maker'][c].has_key?('group.id')
             errors.push 'node[:kafka][:mirror_maker][:' + c + '] entry must have group.id attribute'
           end
         end
       end
-    end
-
-    # Target
-    if !node["kafka"]["mirror_maker"]["mirror_target.properties"].has_key?('metadata.broker.list')
-          errors.push 'node[:kafka][:mirror_maker][:mirror_target.properties] entry must have metadata.broker.list attribute'
     end
 
     # Raise an exception if there are any problems
