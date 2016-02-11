@@ -160,6 +160,34 @@ This recipe creates a service which can be used to start/stop/restart the offset
 
 Log files are written to `kafka-offset-monitor.log` in `node["kafka"]["log_dir"]` (defaults to /var/log/kafka).
 
+Mirror Maker
+------------
+
+The `kafka::mirror_maker` recipe will install the Kafka Mirror Maker application, which provides a
+daemon for replicating topics from one or more source kafka clusters, to a target kafka cluster.
+
+This recipe shares several attributes with the default recipe:
+
+ * `node["kafka"]["user"]`
+ * `node["kafka"]["group"]`
+ * `node["kafka"]["base_dir"]`
+ * `node["kafka"]["log_dir"]`
+
+The mirror maker code is a part of the core kafka distribution and does not involve an additional download.
+
+The mirror maker will connect to one or more source kafka clusters as a consumer to each, and to exactly one target
+kafka cluster as a producer.
+
+This recipe is not included by the default recipe. It can be added to any or all of the Kafka broker nodes,
+or a separate node or VM. 
+
+This recipe creates a service which can be used to start/stop/restart the mirror maker java process,
+
+    service kafka-mirror-maker [start|stop|restart|status]
+
+Log files are written to `kafka-mirror-maker.log` in `node["kafka"]["log_dir"]` (defaults to /var/log/kafka).
+
+
 Attributes
 ----------
 
@@ -191,7 +219,16 @@ Attributes
  * `node["kafka"]["offset_monitor"]["db_name"]` : The base file name for the offset monitoring database file written into the kafka user's home directory (default = "offset_monitor")
  * `node["kafka"]["service"]["stdout"]` : The file to keep std output of kafka init service (default = "/dev/null")
  * `node["kafka"]["service"]["stderr"]` : The file to keep std error of kafka init service (default = "/dev/null")
-
+ * `node["kafka"]["mirror_maker"]["whitelist"]` : A whitelist of topics that will be mirrored. (default = ".*")
+ * `node["kafka"]["mirror_maker"]["blacklist"]` : A blacklist of topics that will not be mirrored. (default = nil)
+ * `node["kafka"]["mirror_maker"]["streams"]` : Number of consumer threads to run. (default = 2)
+ * `node["kafka"]["mirror_maker"]["mirror_target.properties"][*]` : A key/value that will be set in mirror's target properties file. Used to customize the mirror configuration. See [Mirror docs](https://kafka.apache.org/documentation.html#basic_ops_mirror_maker)
+ * `node["kafka"]["mirror_maker"]["mirror_sources"]` : a list of source property files to create. (default = ["mirror_source1.properties"])
+ * `node["kafka"]["mirror_maker"]["mirror_source1.properties"][*]` : A key/value that will be set in mirror's source properties file. Used to customize the mirror configuration. See [Mirror docs](https://kafka.apache.org/documentation.html#basic_ops_mirror_maker)
+ * `node["kafka"]["mirror_maker"]["service"]["stdout"]` : The file to keep std output of kafka init service (default = "/dev/null")
+ * `node["kafka"]["mirror_maker"]["service"]["stderr"]` : The file to keep std error of kafka init service (default = "/dev/null")
+ * `node["kafka"]["mirror_maker"]["env_vars"]` : A hash of environment variable names to their values to be set for the mirror maker. This can be used to customize the server memory settings. (for defaults see attributes file)
+ * `node["kafka"]['mirror_maker']["mirror-log4j.properties"][*]` : A key/value that will be set in the mirror maker's log4j.properties file. (for defaults see attributes file)
 
 Testing
 -------

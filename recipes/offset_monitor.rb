@@ -27,28 +27,7 @@ log "Installing #{node["kafka"]["offset_monitor"]["url"]} to #{node["kafka"]["of
 
 include_recipe "java"
 
-# setup kafka group
-group node["kafka"]["group"] do
-  action :create
-end
-
-# setup kafka user
-user node["kafka"]["user"] do
-  comment "Kafka user"
-  gid node["kafka"]["group"]
-  shell "/bin/bash"
-  home "/home/#{node["kafka"]["user"]}"
-  supports :manage_home => true
-end
-
-# Ensure the Kafka log directory exists
-directory node["kafka"]["log_dir"] do
-  action :create
-  owner node["kafka"]["user"]
-  group node["kafka"]["group"]
-  mode 00755
-  recursive true
-end
+include_recipe "cerner_kafka::_common"
 
 # Ensure the install directory exists
 directory node["kafka"]["offset_monitor"]["install_dir"] do
