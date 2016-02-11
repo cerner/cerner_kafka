@@ -73,6 +73,7 @@ default["kafka"]["offset_monitor"]["retain"] = "7.days"
 default["kafka"]["mirror_maker"]["whitelist"] = ".*"
 default["kafka"]["mirror_maker"]["blacklist"] = nil
 default["kafka"]["mirror_maker"]["streams"] = 2
+default["kafka"]["mirror_maker"]["new_consumer"] = false
 default["kafka"]["mirror_maker"]["mirror_sources"] = ["mirror_source1.properties"]
 
 # Set Log file for kafka init script stdout/stderr

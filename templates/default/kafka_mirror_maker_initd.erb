@@ -33,6 +33,9 @@ MIRROR_PARAMS="\
 <% node['kafka']['mirror_maker']['mirror_sources'].each do |src| %>
 --consumer.config <%= node['kafka']['install_dir'] %>/config/<%= src %> \
 <% end %>
+<% if !node['kafka']['mirror_maker']['new_consumer'].nil? %>
+--new.consumer \
+<% end %>
 --num.streams <%= node['kafka']['mirror_maker']['streams'] %> \
 --producer.config <%= node['kafka']['install_dir'] %>/config/mirror_target.properties \
 <% if !node['kafka']['mirror_maker']['blacklist'].nil? %>
