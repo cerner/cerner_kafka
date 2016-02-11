@@ -73,15 +73,7 @@ default["kafka"]["offset_monitor"]["retain"] = "7.days"
 default["kafka"]["mirror_maker"]["whitelist"] = ".*"
 default["kafka"]["mirror_maker"]["blacklist"] = nil
 default["kafka"]["mirror_maker"]["streams"] = 2
-default["kafka"]["mirror_maker"]["mirror_target.properties"]["metadata.broker.list"] = "localhost:6667"
-default["kafka"]["mirror_maker"]["mirror_target.properties"]["producer.type"] = "sync"
-default["kafka"]["mirror_maker"]["mirror_target.properties"]["compression.codec"] = "none"
-default["kafka"]["mirror_maker"]["mirror_target.properties"]["serializer.class"] = "kafka.serializer.DefaultEncoder"
 default["kafka"]["mirror_maker"]["mirror_sources"] = ["mirror_source1.properties"]
-default["kafka"]["mirror_maker"]["mirror_source1.properties"]["zookeeper.connect"] = "127.0.0.1:2181"
-default["kafka"]["mirror_maker"]["mirror_source1.properties"]["zookeeper.connection.timeout.ms"] = 1000000
-default["kafka"]["mirror_maker"]["mirror_source1.properties"]["group.id"] = "mirror-consumer-group"
-default["kafka"]["mirror_maker"]["mirror_source1.properties"]["consumer.timeout.ms"] = 1000000
 
 # Set Log file for kafka init script stdout/stderr
 default["kafka"]["mirror_maker"]["service"]["stdout"] = File.join node["kafka"]["log_dir"], "kafka_mirror_maker_init_stdout.log"
