@@ -78,15 +78,32 @@ the recommended way to setup your kafka cluster in Chef.
 
 Once all that is done you should be able to run the recipe without any problem.
 
+### Updating from 1.X and 2.X of the Cookbook
+
+There were some non-passive changes made during the upgrade to the 2.X version of
+the cookbook. Specifically,
+
+ * Removed a number of default kafka configs ([See here](https://github.com/cerner/cerner_kafka/commit/b5a382bd8f57af71d1fdaac693a5394d1c6e9ff2))
+ * Updated defaults to install Kafka 0.9.0.0 (Scala 2.11)
+
+Make sure to make the appropriate attribute changes if needed. Otherwise the
+cookbook should work just as it did before.
+
+Additionally in Kafka 0.9 broker's can be auto assigned broker ids. The cookbook
+supports this feature. Make sure to keep the broker ids for existing nodes otherwise
+they may drop their data.
+
 ### How to specify where to download kafka from and which version to install
 
-This cookbook supports Kafka version `0.8.1.1` and above. The default attributes currently will install version `0.8.1.1` from
+This cookbook supports Kafka version `0.8.1.1` and above. The default attributes currently will install version `0.9.0.0` from
 'https://archive.apache.org/dist/kafka'. This is configured using a number of different attributes in order to make it easier for you.
+
+NOTE: If you are upgrading from `0.8.X` to `0.9.X` there are some [additional steps](http://kafka.apache.org/documentation.html#upgrade_9) to handle a rolling upgrade.
 
 There are basically two ways to configure these settings. The first way is via 3 different attributes,
 
- * `node["kafka"]["scala_version"]` : The scala version number associated with the kafka installation (default="2.9.2")
- * `node["kafka"]["version"]` : The version number associated with the kafka installation (default="0.8.1.1")
+ * `node["kafka"]["scala_version"]` : The scala version number associated with the kafka installation (default="2.11")
+ * `node["kafka"]["version"]` : The version number associated with the kafka installation (default="0.9.0.0")
  * `node["kafka"]["download_url"]` : The base url used to download Kafka (default="https://archive.apache.org/dist/kafka")
 
 With these 3 attributes we build the full url of the form
@@ -180,7 +197,7 @@ Attributes
  * `node["kafka"]["shutdown_timeout"]` : The init.d script shutdown timeout in seconds. Adjust as needed based on cluster size (in terms of partitions) and required shutdown time. (default=30)
  * `node["kafka"]["env_vars"]` : A hash of environment variable names to their values to be set for the kafka user. This can be used to customize the server memory settings. (default={})
  * `node["kafka"]["lib_jars"]` : A list of URLs to install a jar in `#{node["kafka"]["install_dir"]}/libs`. (default=[])
- * `node["kafka"]["server.properties"][*]` : A key/value that will be set in server's properties file. Used to customize the broker configuration. (default=`{"log.dirs" => "/tmp/kafka-logs"}` See [Kafka doc](http://kafka.apache.org/documentation.html#brokerconfigs) for Kafka defaults)
+ * `node["kafka"]["server.properties"][*]` : A key/value that will be set in server's properties file. Used to customize the broker configuration. (default=`{}` See [Kafka doc](http://kafka.apache.org/documentation.html#brokerconfigs) for Kafka defaults)
  * `node["kafka"]["log4j.properties"][*]` : A key/value that will be set in the server's log4j.properties file. (for defaults see attributes file)
  * `node["kafka"]["offset_monitor"]["url"]` The download url for the offset monitor (default = "https://github.com/quantifind/KafkaOffsetMonitor/releases/download/v0.2.0/KafkaOffsetMonitor-assembly-0.2.0.jar")
  * `node["kafka"]["offset_monitor"]["install_dir"]` : The installation directory for the offset monitor (default = `node["kafka]["base_dir"]`/kafka-offset-monitor)

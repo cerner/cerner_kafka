@@ -23,9 +23,13 @@ class CernerKafkaHelper
       end
 
       if broker_id.nil?
-        Chef::Log.error("Unable to find #{node['fqdn']}, #{node['ipaddress']} or "\
-                        "#{node['hostname']} in node['kafka']['brokers'] : #{node['kafka']['brokers']}"
-                       )
+        if node['kafka']['version'].start_with? '0.8'
+          Chef::Log.error("Unable to find #{node['fqdn']}, #{node['ipaddress']} or "\
+                          "#{node['hostname']} in node['kafka']['brokers'] : #{node['kafka']['brokers']}")
+        else
+          Chef::Log.debug('Using Kafka broker id auto assign')
+          return
+        end
       else
         node.default['kafka']['server.properties']['broker.id'] = broker_id + 1
         Chef::Log.debug("BROKER SET: #{node['kafka']['server.properties']['broker.id']}")

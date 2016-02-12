@@ -85,4 +85,44 @@ describe 'cerner_kafka::default' do
 
   end
 
+  context 'with log.dirs set to many directories' do
+
+    let(:chef_run) do
+      ChefSpec::SoloRunner.new do |node|
+        node.set['kafka']['brokers'] = ['chefspec']
+        node.set['kafka']['zookeepers'] = ['localhost:2181']
+        node.set['kafka']['version'] = '0.8.2'
+        node.set['kafka']['server.properties']['log.dirs'] = '/tmp/k1,/tmp/k2,/tmp/k3'
+      end
+    end
+
+    it 'should create a directory for each log.dirs value' do
+      chef_run.converge(described_recipe)
+      expect(chef_run).to create_directory('/tmp/k1')
+      expect(chef_run).to create_directory('/tmp/k2')
+      expect(chef_run).to create_directory('/tmp/k3')
+    end
+
+  end
+
+  context 'without log.dirs set' do
+
+    let(:chef_run) do
+      ChefSpec::SoloRunner.new do |node|
+        node.set['kafka']['brokers'] = ['chefspec']
+        node.set['kafka']['zookeepers'] = ['localhost:2181']
+        node.set['kafka']['version'] = '0.8.2'
+        node.set['kafka']['server.properties'] = {}
+      end
+    end
+
+    it 'should not create any log.dirs directory' do
+      chef_run.converge(described_recipe)
+      expect(chef_run).to_not create_directory('/tmp/k1')
+      expect(chef_run).to_not create_directory('/tmp/k2')
+      expect(chef_run).to_not create_directory('/tmp/k3')
+    end
+
+  end
+
 end

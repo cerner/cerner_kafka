@@ -80,13 +80,15 @@ directory node["kafka"]["log_dir"] do
 end
 
 # Ensure the Kafka broker log (kafka data) directories exist
-node["kafka"]["server.properties"]["log.dirs"].split(",").each do |log_dir|
-  directory log_dir do
-    action :create
-    owner node["kafka"]["user"]
-    group node["kafka"]["group"]
-    mode 00700
-    recursive true
+if node["kafka"]["server.properties"].has_key? 'log.dirs'
+  node["kafka"]["server.properties"]["log.dirs"].split(",").each do |log_dir|
+    directory log_dir do
+      action :create
+      owner node["kafka"]["user"]
+      group node["kafka"]["group"]
+      mode 00700
+      recursive true
+    end
   end
 end
 
