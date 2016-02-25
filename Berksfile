@@ -7,5 +7,6 @@ group :test do
   cookbook "apache_zookeeper"
 
   # There is an issue where java won't install correctly without doing an apt-update in our tests
-  cookbook "apt", "~> 2.4"
+  cookbook "apt"
+  cookbook "curl" # Needed by serverspec tests
 end

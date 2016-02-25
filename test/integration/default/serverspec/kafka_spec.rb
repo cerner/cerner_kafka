@@ -7,8 +7,11 @@ describe user('kafka') do
   it { should belong_to_group 'kafka' }
 end
 
-describe service('kafka') do
-  it { should be_running   }
+# We can't use service serverspec resource as ubuntu's service command (init)
+# doesn't seem to understand our init.d script
+describe command('/etc/init.d/kafka status') do
+  its(:stdout) { should contain('Kafka is running') }
+  its(:exit_status) { should eq 0 }
 end
 
 # Kafka Broker API
