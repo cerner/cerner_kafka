@@ -1,6 +1,14 @@
 Change Log
 ==========
 
+[2.0.0 - 02-12-2016](https://github.com/cerner/cerner_kafka/issues?milestone=4&state=closed)
+--------------------------------------------------------------------------------------------
+
+  * [Enhancement] [Issue-33](https://github.com/cerner/cerner_kafka/issues/33) : Default to version 0.9.0 and scala 2.11
+  * [Bug] [Issue-29](https://github.com/cerner/cerner_kafka/issues/29) : kafka stdout logs same thing as server.log
+  * [Enhancement] [Issue-28](https://github.com/cerner/cerner_kafka/issues/28) : add libraries to find broker id and zookeepers
+  * [Enhancement] [Issue-14](https://github.com/cerner/cerner_kafka/issues/14) : Remove broker config defaults
+
 [1.1.0 - 08-14-2015](https://github.com/cerner/cerner_kafka/issues?milestone=2&state=closed)
 --------------------------------------------------------------------------------------------
 
