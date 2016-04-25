@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+[2.1.0 - 04-25-2016](https://github.com/cerner/cerner_kafka/issues?milestone=5&state=closed)
+--------------------------------------------------------------------------------------------
+
+  * [Enhancement] [Issue-39](https://github.com/cerner/cerner_kafka/issues/39) : separated user and group logic to another recipe
+
 [2.0.0 - 02-12-2016](https://github.com/cerner/cerner_kafka/issues?milestone=4&state=closed)
 --------------------------------------------------------------------------------------------
 
