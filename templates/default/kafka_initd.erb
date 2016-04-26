@@ -13,10 +13,11 @@
 ### END INIT INFO
 
 USER=<%= node["kafka"]["user"] %>
-SLEEP_TIME=5
+SLEEP_TIME=<%= node["kafka"]["init"]["stop_sleep_time"] %>
 CURRENT_WAIT=0
-TIMEOUT=<%= node["kafka"]["shutdown_timeout"] %>
-KAFKA_MAIN=kafka.Kafka
+TIMEOUT=<%= node["kafka"]["init"]["shutdown_timeout"] %>
+KAFKA_MAIN=<%= node["kafka"]["init"]["kafka_main"] %>
+SLEEP_BETWEEN_RESTART=<%= node["kafka"]["init"]["sleep_between_restart"] %>
 
 # Setup JMX port environment variable, if set
 <% if !node["kafka"]["env_vars"]["JMX_PORT"].nil? and !node["kafka"]["env_vars"]["JMX_PORT"].empty? -%>
@@ -34,7 +35,7 @@ STOP_SERVER_CMD="<%= node["kafka"]["install_dir"] %>/bin/kafka-server-stop.sh >>
 start() {
   findPid
 
-  if [ "" = "$FOUND_PID" ]; then
+  if [ -z "$FOUND_PID" ]; then
     su -l $USER -c "$START_SERVER_CMD"
 
     if [ $? -ne 0 ]; then
@@ -75,8 +76,18 @@ stop() {
     done
 
     echo "Stopped Kafka"
-
   fi
+}
+
+restart() {
+  stop
+
+  if [ "$SLEEP_BETWEEN_RESTART" -gt 0 ]; then
+    echo "Sleeping for $SLEEP_BETWEEN_RESTART seconds between stop and start"
+    sleep $SLEEP_BETWEEN_RESTART
+  fi
+
+  start
 }
 
 status() {
@@ -100,8 +111,7 @@ case "$1" in
     stop
   ;;
   restart)
-    stop
-    start
+    restart
   ;;
   status)
     status

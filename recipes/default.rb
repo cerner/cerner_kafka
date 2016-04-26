@@ -186,4 +186,5 @@ end
 # Start/Enable Kafka
 service "kafka" do
   action [:enable, :start]
+  supports :status => true, :restart => true
 end
