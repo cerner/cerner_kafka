@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+[2.1.1 - 04-26-2016](https://github.com/cerner/cerner_kafka/issues?milestone=6&state=closed)
+--------------------------------------------------------------------------------------------
+
+  * [Bug] [Issue-41](https://github.com/cerner/cerner_kafka/issues/41) : moved kafka user configuration back into default recipe
+
 [2.1.0 - 04-25-2016](https://github.com/cerner/cerner_kafka/issues?milestone=5&state=closed)
 --------------------------------------------------------------------------------------------
 
