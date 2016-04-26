@@ -42,6 +42,15 @@ include_recipe "ulimit"
 # manage user and group
 include_recipe "cerner_kafka::_user_group"
 
+# Configure kafka user
+template "/home/#{node["kafka"]["user"]}/.bash_profile" do
+  source  "bash_profile.erb"
+  owner node["kafka"]["user"]
+  group node["kafka"]["group"]
+  mode  00755
+  notifies :restart, "service[kafka]"
+end
+
 # Ensure the Kafka base directory exists
 directory node["kafka"]["base_dir"] do
   action :create
