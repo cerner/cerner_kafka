@@ -21,7 +21,17 @@ default["kafka"]["brokers"] = nil
 default["kafka"]["zookeepers"] = nil
 default["kafka"]["zookeeper_chroot"] = nil
 
-default["kafka"]["shutdown_timeout"] = 30     # init.d script shutdown time-out in seconds
+# This is our old attribute, kept here for compatability
+default["kafka"]["shutdown_timeout"] = 30
+# How long we should wait before failing if Kafka won't stop
+default["kafka"]["init"]["shutdown_timeout"] = node["kafka"]["shutdown_timeout"]
+# How long we should sleep between stop and start during restart
+default["kafka"]["init"]["sleep_between_restart"] = 0
+# The name of the Kafka process we should look for
+default["kafka"]["init"]["kafka_main"] = "kafka.Kafka"
+# How long we should sleep in stop before checking if kafka is still running
+default["kafka"]["init"]["stop_sleep_time"] = 5
+
 default["kafka"]["env_vars"]["JMX_PORT"] = "9999"
 default["kafka"]["env_vars"]["KAFKA_HEAP_OPTS"] = "\"-Xmx4G -Xms4G\""
 default["kafka"]["env_vars"]["KAFKA_JVM_PERFORMANCE_OPTS"] = "\"-XX:PermSize=48m -XX:MaxPermSize=48m -XX:+UseG1GC -XX:MaxGCPauseMillis=20 -XX:InitiatingHeapOccupancyPercent=35\""
