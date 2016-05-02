@@ -1,0 +1,64 @@
+driver:
+  name: dokken
+  chef_version: latest
+  privileged: true # because Docker and SystemD/Upstart
+
+transport:
+  name: dokken
+
+provisioner:
+  name: dokken
+
+verifier:
+  root_path: '/opt/verifier'
+  sudo: false
+
+platforms:
+
+- name: centos-7
+  driver:
+    image: centos:7
+    intermediate_instructions:
+      - RUN yum clean all
+      # Install any packages needed by chef, cookbooks or testing
+      - RUN yum -y install net-tools lsof initscripts
+    pid_one_command: /usr/lib/systemd/systemd
+
+- name: ubuntu-15.10
+  driver:
+    image: ubuntu:15.10
+    pid_one_command: /bin/systemd
+    intermediate_instructions:
+      - RUN /usr/bin/apt-get update
+      # Install any packages needed by chef, cookbooks or testing
+      - RUN /usr/bin/apt-get install apt-transport-https net-tools -y
+  run_list:
+  - recipe[apt]
+
+suites:
+- name: default
+  run_list:
+  - recipe[curl] # Curl is used by testing
+  - recipe[apache_zookeeper]
+  - recipe[cerner_kafka]
+  - recipe[cerner_kafka::offset_monitor]
+  attributes:
+    java:
+      # Kafka 0.9 require java 7 or higher
+      jdk_version: 7
+    kafka:
+      zookeepers:
+        - localhost:2181
+      lib_jars:
+        - http://search.maven.org/remotecontent?filepath=io/dropwizard/metrics/metrics-logback/3.1.0/metrics-logback-3.1.0.jar
+      server.properties:
+        default.replication.factor: 1
+        bogus.for.testing: server
+      log4j.properties:
+        bogus.for.testing: log4j
+      env_vars:
+        KAFKA_HEAP_OPTS: '"-Xmx256m -Xms256m"'
+        BOGUS_VAR: TEST_VALUE
+      offset_monitor:
+        port: 8088
+      shutdown_timeout: 35

@@ -2,8 +2,11 @@
 
 require 'spec_helper'
 
-describe service('kafka-offset-monitor') do
-  it { should be_running   }
+# We can't use service serverspec resource as ubuntu's service command (init)
+# doesn't seem to understand our init.d script
+describe command('/etc/init.d/kafka-offset-monitor status') do
+  its(:stdout) { should contain('Kafka offset monitor is running') }
+  its(:exit_status) { should eq 0 }
 end
 
 # Kafka Offset Monitor API
@@ -23,9 +26,8 @@ describe 'kafka offset monitor' do
     end
   end
 
-  it 'should be able to connect to offset monitor and get home page' do
-    wgetOutput = `wget http://localhost:8088 2>&1 | grep response`
-    expect(wgetOutput).to include("200 OK")
+  describe command('curl -f http://localhost:8088') do
+    its(:exit_status) { should eq 0 }
   end
 
   it 'should be able to get monitoring details page for a topic' do
@@ -36,8 +38,8 @@ describe 'kafka offset monitor' do
     expect(createOutput).to include("Created topic")
     sleep 1
 
-    wgetOutput = `wget http://localhost:8088/#/topicdetail/#{topicName} 2>&1 | grep response`
-    expect(wgetOutput).to include("200 OK")
+    wgetOutput = `curl -f http://localhost:8088/#/topicdetail/#{topicName}`
+    expect($?.success?).to eq(true)
   end
 
   it 'should be able to get monitoring details page for a consumer group' do
@@ -52,8 +54,8 @@ describe 'kafka offset monitor' do
     consumerOutput = `/opt/kafka/bin/kafka-console-consumer.sh --zookeeper localhost:2181 --consumer.config /tmp/consumer.properties --topic #{topicName} --timeout-ms 500 2>&1`
     expect(consumerOutput).to include("kafka.consumer.ConsumerTimeoutException")
 
-    wgetOutput = `wget http://localhost:8088/#/group/#{groupName} 2>&1 | grep response`
-    expect(wgetOutput).to include("200 OK")
+    wgetOutput = `curl -f http://localhost:8088/#/group/#{groupName}`
+    expect($?.success?).to eq(true)
   end
 
 end

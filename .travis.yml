@@ -1,11 +1,44 @@
-language: ruby
-bundler_args: --without release
-cache: bundler
-sudo: false
-rvm:
-  - 2.1.2
+
+# Needed for docker
+sudo: required
+
+services: docker
+
+# install the stable release of chefdk
+addons:
+  apt:
+    sources:
+      - chef-stable-precise
+    packages:
+      - chefdk
+
+# We don't need to install our gems as it comes from chefdk above
+install: echo "skip bundle install"
+
+env:
+  matrix:
+  - INSTANCE=default-centos-7
+  - INSTANCE=default-ubuntu-1510
+
+before_script:
+  # Print out docker info
+  - docker --version
+  - docker info
+  # Setup chefdk (Initialize your shell to use ChefDK as your primary ruby)
+  - eval "$(/opt/chefdk/bin/chef shell-init bash)"
+  # Install test kitchen docker integration
+  - /opt/chefdk/embedded/bin/chef gem install kitchen-dokken
+
 script:
-# We cannot run integration tests on travis since that uses vagrant/virtualbox and
-# is not available in travis ci
-  - bundle exec rspec
-  - bundle exec foodcritic . -f any
+  # Run tests
+  - /opt/chefdk/embedded/bin/chef --version
+  - /opt/chefdk/embedded/bin/foodcritic . -f any
+  - /opt/chefdk/embedded/bin/rspec
+  # Run test kitchen using .kitchen.docker.yml instead of default .kitchen.yml
+  - KITCHEN_YAML=.kitchen.docker.yml kitchen verify ${INSTANCE}
+
+after_script:
+  # Print out debug information
+  - docker images
+  - docker ps -a
+  - cat .kitchen/logs/*kitchen*.log
