@@ -15,25 +15,20 @@
 USER="<%= node['kafka']['user']%>"
 JAR_FILE="<%= @jar_file %>"
 MAIN_CLASS="<%= node['kafka']['offset_monitor']['main_class'] %>"
-ZK="<%= @zk %>"
-PORT="<%= node['kafka']['offset_monitor']['port'] %>"
-REFRESH="<%= node['kafka']['offset_monitor']['refresh'] %>"
-RETAIN="<%= node['kafka']['offset_monitor']['retain'] %>"
-DB_NAME="<%= node['kafka']['offset_monitor']['db_name'] %>"
 LOG_FILE="<%= node['kafka']['log_dir'] %>/kafka-offset-monitor.log"
-
-START_CMD="nohup java -cp $JAR_FILE $MAIN_CLASS --zk $ZK --port $PORT --dbName $DB_NAME --refresh $REFRESH --retain $RETAIN >> $LOG_FILE 2>&1 &"
+OPTIONS="<%= node['kafka']['offset_monitor']['options'].map{|k,v| "#{k} #{v}"}.join(" ") %>"
+START_CMD="nohup java -cp $JAR_FILE $MAIN_CLASS $OPTIONS >> $LOG_FILE 2>&1 &"
 
 start() {
   findPid
   if [ -z "$FOUND_PID" ]; then
     su -l $USER -c "$START_CMD"
-      
+
     if [ $? -ne 0 ]; then
       echo "Error starting Kafka offset monitor"
       exit 1
     fi
-      
+
     echo "Kafka offset monitor successfully started"
   else
     echo "Kafka offset monitor is already running"
@@ -47,12 +42,12 @@ stop() {
   else
     echo "Attempting to shutdown Kafka offset monitor..."
     kill -9 "$FOUND_PID"
- 
+
     if [ $? -ne 0 ]; then
       echo "Error stopping Kafka offset monitor"
       exit 1
     fi
-      
+
     echo "Stopped Kafka offset monitor"
   fi
 }
@@ -62,7 +57,7 @@ status() {
   if [ -z "$FOUND_PID" ]; then
     echo "Kafka offset monitor is not running" ; exit 1
   else
-    echo "Kafka offset monitor is running : $FOUND_PID" 
+    echo "Kafka offset monitor is running : $FOUND_PID"
   fi
 }
 

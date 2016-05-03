@@ -19,6 +19,7 @@ node.default["kafka"]["offset_monitor"]["install_dir"] = "#{node["kafka"]["base_
 zookeepers = node["kafka"]["zookeepers"].join ","
 zookeepers += node["kafka"]["zookeeper_chroot"] unless node["kafka"]["zookeeper_chroot"].nil?
 
+node.default["kafka"]["offset_monitor"]["options"]["--zk"] = zookeepers
 
 offsetMonitorFileName = File.basename(node["kafka"]["offset_monitor"]["url"])
 fullOffsetMonitorFileName = File.join node["kafka"]["offset_monitor"]["install_dir"], offsetMonitorFileName
@@ -85,7 +86,6 @@ end
 template "/etc/init.d/kafka-offset-monitor" do
   source "kafka_offset_monitor_initd.erb"
   variables({
-    :zk => zookeepers,
     :jar_file => fullOffsetMonitorFileName
   })
   owner "root"

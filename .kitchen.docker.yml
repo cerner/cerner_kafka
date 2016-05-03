@@ -61,4 +61,6 @@ suites:
         BOGUS_VAR: TEST_VALUE
       offset_monitor:
         port: 8088
+        options:
+          --zkSessionTimeout: 30.seconds
       shutdown_timeout: 35

@@ -14,6 +14,11 @@ describe port(8088) do
   it { should be_listening }
 end
 
+describe command('ps aux | grep kafka-offset-monitor') do
+  its(:stdout) { should contain('java -cp /opt/kafka-offset-monitor/KafkaOffsetMonitor-assembly-0.2.1.jar com.quantifind.kafka.offsetapp.OffsetGetterWeb --port 8088 --dbName offset_monitor --refresh 15.minutes --retain 7.days --zk localhost:2181 --zkSessionTimeout 30.seconds') }
+  its(:exit_status) { should eq 0 }
+end
+
 describe 'kafka offset monitor' do
 
   it 'should own all files' do
