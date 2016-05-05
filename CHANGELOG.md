@@ -1,6 +1,16 @@
 Change Log
 ==========
 
+[2.2.0 - 05-03-2016](https://github.com/cerner/cerner_kafka/issues?milestone=7&state=closed)
+--------------------------------------------------------------------------------------------
+
+  * [Feature] [Issue-49](https://github.com/cerner/cerner_kafka/issues/49) : Support any option for offset monitor
+  * [Enhancement] [Issue-46](https://github.com/cerner/cerner_kafka/issues/46) : #45: Cleaned up init script and added sleep between stop/start during…
+  * [Enhancement] [Issue-45](https://github.com/cerner/cerner_kafka/issues/45) : Add sleep between restart
+  * [Bug] [Issue-44](https://github.com/cerner/cerner_kafka/issues/44) : #43: Fixed init math logic
+  * [Bug] [Issue-43](https://github.com/cerner/cerner_kafka/issues/43) : Init script number addition incorrect
+  * [Enhancement] [Issue-38](https://github.com/cerner/cerner_kafka/issues/38) : Setup travis to run test-kitchen via docker
+
 [2.1.1 - 04-26-2016](https://github.com/cerner/cerner_kafka/issues?milestone=6&state=closed)
 --------------------------------------------------------------------------------------------
 
