@@ -14,15 +14,14 @@ end
 raise "Unable to run kafka::offsetmonitor : [#{errors.join ", "}]" unless errors.empty?
 
 # Set all default attributes that are built from other attributes
-node.default["kafka"]["offset_monitor"]["install_dir"] = "#{node["kafka"]["base_dir"]}/kafka-offset-monitor"
+node.default["kafka"]["offset_monitor"]["install_dir"] = "#{node["kafka"]["base_dir"]}/KafkaOffsetMonitor"
 
 zookeepers = node["kafka"]["zookeepers"].join ","
 zookeepers += node["kafka"]["zookeeper_chroot"] unless node["kafka"]["zookeeper_chroot"].nil?
 
 node.default["kafka"]["offset_monitor"]["options"]["--zk"] = zookeepers
 
-offsetMonitorFileName = File.basename(node["kafka"]["offset_monitor"]["url"])
-fullOffsetMonitorFileName = File.join node["kafka"]["offset_monitor"]["install_dir"], offsetMonitorFileName
+log4j_jar_path = File.join(node["kafka"]["offset_monitor"]["install_dir"], 'log4j.jar')
 
 log "Installing #{node["kafka"]["offset_monitor"]["url"]} to #{node["kafka"]["offset_monitor"]["install_dir"]}"
 
@@ -58,36 +57,51 @@ directory node["kafka"]["offset_monitor"]["install_dir"] do
   recursive true
 end
 
-# Download kafka offset monitor jar if it does not exist already
-remote_file "#{Chef::Config[:file_cache_path]}/#{offsetMonitorFileName}" do
-  action :create_if_missing
+# Download kafka offset monitor jar
+remote_file File.join(node["kafka"]["offset_monitor"]["install_dir"], 'KafkaOffsetMonitor.jar') do
+  action :create
   source node["kafka"]["offset_monitor"]["url"]
+  owner node["kafka"]["user"]
+  group node["kafka"]["group"]
   mode 00644
   backup false
+  notifies :restart, "service[kafka-offset-monitor]"
 end
 
-# Copy kafka offset monitor file into its install directory
-execute "copy offset monitor file" do
-  command "cp #{Chef::Config[:file_cache_path]}/#{offsetMonitorFileName} #{node["kafka"]["offset_monitor"]["install_dir"]}"
-  not_if do
-    File.exists? fullOffsetMonitorFileName
+if node["kafka"]["offset_monitor"]["include_log4j_jar"]
+  # Download and include the log4j binding jar for offset monitor
+  remote_file log4j_jar_path do
+    action :create
+    source node["kafka"]["offset_monitor"]["log4j_url"]
+    owner node["kafka"]["user"]
+    group node["kafka"]["group"]
+    mode 00644
+    backup false
+    notifies :restart, "service[kafka-offset-monitor]"
   end
-
-  # In case kafka offset monitor is running we need to stop it before we upgrade/change installations
-  notifies :stop, "service[kafka-offset-monitor]", :immediately
+else
+  # Ensure the log4j file is removed
+  file log4j_jar_path do
+    action :delete
+    notifies :restart, "service[kafka-offset-monitor]"
+  end
 end
 
-# Ensure everything is owned by the kafka user/group
-execute "chown #{node["kafka"]["user"]}:#{node["kafka"]["group"]} -R #{node["kafka"]["offset_monitor"]["install_dir"]}" do
-  action :run
+# logging config for the offset monitor
+template File.join(node["kafka"]["offset_monitor"]["install_dir"], 'offset_monitor_log4j.properties') do
+  source "key_equals_value.erb"
+  owner node["kafka"]["user"]
+  group node["kafka"]["group"]
+  variables({
+    :properties => node["kafka"]["offset_monitor"]["log4j.properties"].to_hash
+  })
+  mode  00755
+  notifies :restart, "service[kafka-offset-monitor]"
 end
 
 # Create init.d script for kafka offset monitor
 template "/etc/init.d/kafka-offset-monitor" do
   source "kafka_offset_monitor_initd.erb"
-  variables({
-    :jar_file => fullOffsetMonitorFileName
-  })
   owner "root"
   group "root"
   mode  00755
