@@ -14,9 +14,16 @@ describe port(8088) do
   it { should be_listening }
 end
 
-describe command('ps aux | grep kafka-offset-monitor') do
-  its(:stdout) { should contain('java -cp /opt/kafka-offset-monitor/KafkaOffsetMonitor-assembly-0.2.1.jar com.quantifind.kafka.offsetapp.OffsetGetterWeb --port 8088 --dbName offset_monitor --refresh 15.minutes --retain 7.days --zk localhost:2181 --zkSessionTimeout 30.seconds') }
-  its(:exit_status) { should eq 0 }
+describe file('/etc/init.d/kafka-offset-monitor') do
+  it { should be_file }
+  it { should be_owned_by 'root' }
+  it { should be_grouped_into 'root' }
+  it { should contain 'USER="kafka"' }
+  it { should contain 'INSTALL_DIR="/opt/KafkaOffsetMonitor"' }
+  it { should contain 'JAVA_OPTIONS="-Dlog4j.configuration=offset_monitor_log4j.properties"' }
+  it { should contain 'MAIN_CLASS="com.quantifind.kafka.offsetapp.OffsetGetterWeb"' }
+  it { should contain 'LOG_FILE="/var/log/kafka/kafka-offset-monitor-init.log"' }
+  it { should contain 'OPTIONS="--port 8088 --dbName offset_monitor --refresh 15.minutes --retain 7.days --zk localhost:2181 --zkSessionTimeout 30.seconds"' }
 end
 
 describe 'kafka offset monitor' do
@@ -25,7 +32,7 @@ describe 'kafka offset monitor' do
     # Ensure we reload ruby's usernames/groups
     Etc.endgrent
     Etc.endpwent
-    Dir["/opt/kafka-offset-monitor/**/*"].each do |filePath|
+    Dir["/opt/KafkaOffsetMonitor/**/*"].each do |filePath|
       expect(Etc.getpwuid(File.stat(filePath).uid).name).to eq("kafka")
       expect(Etc.getgrgid(File.stat(filePath).gid).name).to eq("kafka")
     end

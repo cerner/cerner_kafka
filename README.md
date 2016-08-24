@@ -152,7 +152,7 @@ This recipe shares several attributes with the default recipe:
  * `node["kafka"]["log_dir"]`
 
 The offset monitor application is installed to `node["kafka"]["offset_monitor"]["install_dir"]`
-(defaults to `node["kafka]["base_dir"]/kafka-offset-monitor`). The application download URL is controlled by
+(defaults to `node["kafka]["base_dir"]/KafkaOffsetMonitor`). The application download URL is controlled by
 the `node["kafka"]["offset_monitor"]["url"]` attribute.
 
 The offset monitor maintains an SQLite database comparing the latest Kafka broker offset for each
@@ -204,12 +204,15 @@ Attributes
  * `node["kafka"]["server.properties"][*]` : A key/value that will be set in server's properties file. Used to customize the broker configuration. (default=`{}` See [Kafka doc](http://kafka.apache.org/documentation.html#brokerconfigs) for Kafka defaults)
  * `node["kafka"]["log4j.properties"][*]` : A key/value that will be set in the server's log4j.properties file. (for defaults see attributes file)
  * `node["kafka"]["offset_monitor"]["url"]` The download url for the offset monitor (default = "https://github.com/quantifind/KafkaOffsetMonitor/releases/download/v0.2.0/KafkaOffsetMonitor-assembly-0.2.0.jar")
- * `node["kafka"]["offset_monitor"]["install_dir"]` : The installation directory for the offset monitor (default = `node["kafka]["base_dir"]`/kafka-offset-monitor)
+ * `node["kafka"]["offset_monitor"]["install_dir"]` : The installation directory for the offset monitor (default = `node["kafka]["base_dir"]`/KafkaOffsetMonitor)
  * `node["kafka"]["offset_monitor"]["main_class"]` : The main class for the offset monitor (default = "com.quantifind.kafka.offsetapp.OffsetGetterWeb")
  * `node["kafka"]["offset_monitor"]["port"]` = The port used by the offset monitor web application (default = 8080)
  * `node["kafka"]["offset_monitor"]["refresh"]` : How often the offset monitor refreshes and stores a point in the DB, in `value`.`unit` format (default = "15.minutes")
  * `node["kafka"]["offset_monitor"]["retain"]` : How long the offset monitoring data is kept in the DB, in `value`.`unit` format (default = "7.days")
  * `node["kafka"]["offset_monitor"]["db_name"]` : The base file name for the offset monitoring database file written into the kafka user's home directory (default = "offset_monitor")
+ * `node["kafka"]["offset_monitor"]["java_options"]` : A Hash representing the java options to be used with the offset monitor. All key/values will be combined together as `key + value`. (See attributes file for defaults)
+ * `node["kafka"]["offset_monitor"]["include_log4j_jar"]` : A boolean indicating if we should include the log4j jar in the offset monitor's classpath (default=`true`)
+ * `node["kafka"]["offset_monitor"]["log4j.properties"]` : Hash of log4j settings for the offset monitor (See attributes file for defaults)
  * `node["kafka"]["offset_monitor"]["options"]` : A hash of options to be supplied to command to run offset monitor (see attributes file for defaults)
  * `node["kafka"]["service"]["stdout"]` : The file to keep std output of kafka init service (default = "/dev/null")
  * `node["kafka"]["service"]["stderr"]` : The file to keep std error of kafka init service (default = "/dev/null")

@@ -79,7 +79,19 @@ default["kafka"]["offset_monitor"]["db_name"] = "offset_monitor"
 default["kafka"]["offset_monitor"]["refresh"] = "15.minutes"
 default["kafka"]["offset_monitor"]["retain"] = "7.days"
 
+default["kafka"]["offset_monitor"]["include_log4j_jar"] = true
+default["kafka"]["offset_monitor"]["log4j_url"] = "http://central.maven.org/maven2/org/slf4j/slf4j-log4j12/1.7.21/slf4j-log4j12-1.7.21.jar"
+
+default["kafka"]["offset_monitor"]["java_options"]["-Dlog4j.configuration="] = "offset_monitor_log4j.properties"
+
 default["kafka"]["offset_monitor"]["options"]["--port"] = node["kafka"]["offset_monitor"]["port"]
 default["kafka"]["offset_monitor"]["options"]["--dbName"] = node["kafka"]["offset_monitor"]["db_name"]
 default["kafka"]["offset_monitor"]["options"]["--refresh"] = node["kafka"]["offset_monitor"]["refresh"]
 default["kafka"]["offset_monitor"]["options"]["--retain"] = node["kafka"]["offset_monitor"]["retain"]
+
+default["kafka"]["offset_monitor"]["log4j.properties"]["log4j.rootLogger"] = "INFO, OFFSET"
+default["kafka"]["offset_monitor"]["log4j.properties"]["log4j.appender.OFFSET"] = "org.apache.log4j.RollingFileAppender"
+default["kafka"]["offset_monitor"]["log4j.properties"]["log4j.appender.OFFSET.MaxBackupIndex"] = "20"
+default["kafka"]["offset_monitor"]["log4j.properties"]["log4j.appender.OFFSET.layout"] = "org.apache.log4j.PatternLayout"
+default["kafka"]["offset_monitor"]["log4j.properties"]["log4j.appender.OFFSET.layout.ConversionPattern"] = "%d{ISO8601} %p %c: %m%n"
+default["kafka"]["offset_monitor"]["log4j.properties"]["log4j.appender.OFFSET.File"] = File.join node['kafka']['log_dir'], 'kafka-offset-monitor.log'

@@ -13,11 +13,14 @@
 ### END INIT INFO
 
 USER="<%= node['kafka']['user']%>"
-JAR_FILE="<%= @jar_file %>"
+INSTALL_DIR="<%= node["kafka"]["offset_monitor"]["install_dir"] %>"
+CLASSPATH="$INSTALL_DIR:$INSTALL_DIR/\*"
+JAVA_OPTIONS="<%= node['kafka']['offset_monitor']['java_options'].map{|k,v| k.to_s + v.to_s}.join(" ") %>"
 MAIN_CLASS="<%= node['kafka']['offset_monitor']['main_class'] %>"
-LOG_FILE="<%= node['kafka']['log_dir'] %>/kafka-offset-monitor.log"
+LOG_FILE="<%= node['kafka']['log_dir'] %>/kafka-offset-monitor-init.log"
 OPTIONS="<%= node['kafka']['offset_monitor']['options'].map{|k,v| "#{k} #{v}"}.join(" ") %>"
-START_CMD="nohup java -cp $JAR_FILE $MAIN_CLASS $OPTIONS >> $LOG_FILE 2>&1 &"
+
+START_CMD="nohup java $JAVA_OPTIONS -cp $CLASSPATH $MAIN_CLASS $OPTIONS >> $LOG_FILE 2>&1 &"
 
 start() {
   findPid
