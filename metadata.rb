@@ -10,4 +10,4 @@ depends 'java'
 depends 'ulimit'
 depends 'logrotate'
 
-version           '2.3.0'
+version           '2.4.0'
