@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+[2.3.0 - 08-24-2016](https://github.com/cerner/cerner_kafka/issues?milestone=8&state=closed)
+--------------------------------------------------------------------------------------------
+
+  * [Enhancement] [Issue-52](https://github.com/cerner/cerner_kafka/issues/52) : Provided configuration for controlling offset monitor logging
+
 [2.2.0 - 05-03-2016](https://github.com/cerner/cerner_kafka/issues?milestone=7&state=closed)
 --------------------------------------------------------------------------------------------
 
