@@ -2,10 +2,6 @@ require 'spec_helper'
 
 describe 'cerner_kafka::default' do
 
-  before do
-    Fauxhai.mock(platform:'redhat', version:'6.5')
-  end
-
   let(:chef_run) do
     ChefSpec::SoloRunner.new do |node|
       node.set['kafka']['brokers'] = ['chefspec']
