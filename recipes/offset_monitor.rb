@@ -53,6 +53,8 @@ end
 # Ensure the install directory exists
 directory node["kafka"]["offset_monitor"]["install_dir"] do
   action :create
+  owner node["kafka"]["user"]
+  group node["kafka"]["group"]
   mode 00755
   recursive true
 end
