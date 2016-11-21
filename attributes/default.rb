@@ -21,7 +21,7 @@ default["kafka"]["brokers"] = nil
 default["kafka"]["zookeepers"] = nil
 default["kafka"]["zookeeper_chroot"] = nil
 
-# This is our old attribute, kept here for compatability
+# This is our old attribute, kept here for compatibility
 default["kafka"]["shutdown_timeout"] = 30
 # How long we should wait before failing if Kafka won't stop
 default["kafka"]["init"]["shutdown_timeout"] = node["kafka"]["shutdown_timeout"]
@@ -95,3 +95,15 @@ default["kafka"]["offset_monitor"]["log4j.properties"]["log4j.appender.OFFSET.Ma
 default["kafka"]["offset_monitor"]["log4j.properties"]["log4j.appender.OFFSET.layout"] = "org.apache.log4j.PatternLayout"
 default["kafka"]["offset_monitor"]["log4j.properties"]["log4j.appender.OFFSET.layout.ConversionPattern"] = "%d{ISO8601} %p %c: %m%n"
 default["kafka"]["offset_monitor"]["log4j.properties"]["log4j.appender.OFFSET.File"] = File.join node['kafka']['log_dir'], 'kafka-offset-monitor.log'
+
+#Kerberos configuration
+default["kafka"]["kerberos"]["enable"] = false
+# The keytab location and realm (or complete custom principal) are required if Kerberos is enabled with the above attribute
+default["kafka"]["kerberos"]["keytab_location"] = nil
+default["kafka"]["kerberos"]["realm"] = nil
+default["kafka"]["kerberos"]["principal"] = "#{node["kafka"]["user"]}/#{node["fqdn"]}@#{node["kafka"]["kerberos"]["realm"]}"
+default["kafka"]["kerberos"]["enable_zk"] = false
+default["kafka"]["kerberos"]["krb5_properties"]["useKeyTab"] = "true"
+default["kafka"]["kerberos"]["krb5_properties"]["storeKey"] = "true"
+default["kafka"]["kerberos"]["zk_krb5_properties"]["useKeyTab"] = "true"
+default["kafka"]["kerberos"]["zk_krb5_properties"]["storeKey"] = "true"

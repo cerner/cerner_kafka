@@ -73,7 +73,7 @@ all Chef nodes running the kafka recipe (and are part of the same Kafka cluster)
 `node["kafka"]["server.properties"]["broker.id"]` by using the index of Chef node's fqdn/hostname/ip in the
 list as the `node["kafka"]["server.properties"]["broker.id"]`.
 
-Using `node["kafka"]["brokers"]`, `node["kafka"]["zookeepers"]` and `node["kafka"]["zookeeper_chroot"]` attribtues are
+Using `node["kafka"]["brokers"]`, `node["kafka"]["zookeepers"]` and `node["kafka"]["zookeeper_chroot"]` attributes are
 the recommended way to setup your kafka cluster in Chef.
 
 Once all that is done you should be able to run the recipe without any problem.
@@ -130,12 +130,42 @@ Kafka uses different environment variables to configure the java settings for th
  * `KAFKA_HEAP_OPTS` : The options used to control Kafka's Heap (default="-Xmx4G -Xms4G")
  * `KAFKA_JVM_PERFORMANCE_OPTS` : The options used to control JVM performance settings (default="-XX:PermSize=48m -XX:MaxPermSize=48m -XX:+UseG1GC -XX:MaxGCPauseMillis=20 -XX:InitiatingHeapOccupancyPercent=35")
  * `KAFKA_GC_LOG_OPTS` : The options used to control GC logs (default="-Xloggc:$LOG_DIR/$GC_LOG_FILE_NAME -verbose:gc -XX:+PrintGCDetails -XX:+PrintGCDateStamps -XX:+PrintGCTimeStamps")
- * `KAFKA_OPTS` : Used for any generic JVM settings (default="")
+ * `KAFKA_OPTS` : Used for any generic JVM settings (default="" if `node["kafka"]["kerberos"]["enable"]`=`false`, or "-Djava.security.auth.login.config=`node["kafka"]["install_dir"]`/config/jaas.conf" if `node["kafka"]["kerberos"]["enable"]`=`true`)
 
 You can customize these environment variables (as well as any environment variable for the kafka user) using the
 attribute,
 
  * `node["kafka"]["env_vars"]` : A hash of environment variable names to their values to be set for the kafka user
+
+### Enabling Kerberos authentication
+
+The cookbook supports enabling [Kerberos authentication for the broker](http://kafka.apache.org/090/documentation.html#security_sasl) by setting `node["kafka"]["kerberos"]["enable"]` to `true`.
+
+When enabled, two additional attributes are required,
+
+* `node["kafka"]["kerberos"]["keytab"]` - the Kerberos keytab file location
+* `node["kafka"]["kerberos"]["realm"]` - the Kerberos realm (or `node["kafka"]["kerberos"]["principal"]` to use a custom Kerberos user principal)
+
+The principal creation and keytab deployment are prerequisites not handled by this cookbook.
+
+ZooKeeper client authentication can additionally be enabled by setting `node["kafka"]["kerberos"]["enable_zk"]` to `true`.
+
+Custom Krb5LoginModule options can be set using the `node["kafka"]["kerberos"]["krb5_properties"]` attribute hash for Kafka,
+or `node["kafka"]["kerberos"]["zk_krb5_properties"]` for ZooKeeper (see attributes file for defaults).
+
+Note that enabling Kerberos does not automatically set any configuration into `server.properties`. The following
+properties should be evaluated for relevance and configured separately as needed.
+
+* `listeners`
+* `sasl.enabled.mechanisms`
+* `sasl.kerberos.kinit.cmd`
+* `sasl.kerberos.min.time.before.relogin`
+* `sasl.kerberos.principal.to.local.rules`
+* `sasl.kerberos.service.name`
+* `sasl.kerberos.ticket.renew.jitter`
+* `sasl.kerberos.ticket.renew.window.factor`
+* `sasl.mechanism.inter.broker.protocol`
+* `security.inter.broker.protocol`
 
 Consumer Offset Monitor
 -----------------------
@@ -216,7 +246,13 @@ Attributes
  * `node["kafka"]["offset_monitor"]["options"]` : A hash of options to be supplied to command to run offset monitor (see attributes file for defaults)
  * `node["kafka"]["service"]["stdout"]` : The file to keep std output of kafka init service (default = "/dev/null")
  * `node["kafka"]["service"]["stderr"]` : The file to keep std error of kafka init service (default = "/dev/null")
-
+ * `node["kafka"]["kerberos"]["enable"]` A boolean indicating if Kerberos authentication for the broker should be enabled (default = false)
+ * `node["kafka"]["kerberos"]["enable_zk"]` : A boolean indicating if ZooKeeper client authentication should also be enabled, only applies if `node["kafka"]["kerberos"]["enable"]` = `true` (default = false)
+ * `node["kafka"]["kerberos"]["keytab"]` : the Kerberos keytab file location (default = nil)
+ * `node["kafka"]["kerberos"]["realm"]` : the Kerberos realm (default = nil)
+ * `node["kafka"]["kerberos"]["principal"]` : the Kerberos user principal (default=`node["kafka"]["user"]`/`node["fqdn"]`@`node["kafka"]["kerberos"]["realm"]`)
+ * `node["kafka"]["kerberos"]["krb5_properties"]` : A hash of options for the Krb5LoginModule for Kafka (see attributes file for defaults)
+ * `node["kafka"]["kerberos"]["zk_krb5_properties"]` : A hash of options for the Krb5LoginModule for ZooKeeper (see attributes file for defaults)
 
 Testing
 -------

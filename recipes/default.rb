@@ -42,6 +42,11 @@ include_recipe "ulimit"
 # manage user and group
 include_recipe "cerner_kafka::_user_group"
 
+# add JAAS config location as default JVM parameter if Kerberos is enabled
+if node["kafka"]["kerberos"]["enable"] && node["kafka"]["env_vars"]["KAFKA_OPTS"].nil?
+  node.default["kafka"]["env_vars"]["KAFKA_OPTS"] = "-Djava.security.auth.login.config=#{node["kafka"]["install_dir"]}/config/jaas.conf"
+end
+
 # Configure kafka user
 template "/home/#{node["kafka"]["user"]}/.bash_profile" do
   source  "bash_profile.erb"
@@ -181,6 +186,21 @@ end
 # Link kafka config to /etc/kafka
 link "/etc/kafka" do
   to "#{node["kafka"]["install_dir"]}/config"
+end
+
+# Write JAAS configuration file if enabled
+if node["kafka"]["kerberos"]["enable"]
+  # Verify required attributes are set
+  raise "Kerberos keytab location must be configured" if node["kafka"]["kerberos"]["keytab"].nil?
+  raise "Kerberos realm or principal must be configured" if node["kafka"]["kerberos"]["principal"].end_with? '@'
+
+  template "#{node["kafka"]["install_dir"]}/config/jaas.conf" do
+    source "jaas_config.erb"
+    owner node["kafka"]["user"]
+    group node["kafka"]["group"]
+    mode  00755
+    notifies :restart, "service[kafka]"
+  end
 end
 
 # Start/Enable Kafka

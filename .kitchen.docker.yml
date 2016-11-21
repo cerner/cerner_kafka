@@ -2,6 +2,7 @@ driver:
   name: dokken
   chef_version: latest
   privileged: true # because Docker and SystemD/Upstart
+  hostname: kafkahost
 
 transport:
   name: dokken
@@ -59,8 +60,21 @@ suites:
       env_vars:
         KAFKA_HEAP_OPTS: '"-Xmx256m -Xms256m"'
         BOGUS_VAR: TEST_VALUE
+        # Override KAFKA_OPTS so that Kerberos is not actually enabled for the broker
+        KAFKA_OPTS: '"-Dsome.system.property=ok"'
       offset_monitor:
         port: 8088
         options:
           --zkSessionTimeout: 30.seconds
       shutdown_timeout: 35
+      kerberos:
+        enable: true
+        enable_zk: true
+        keytab: /etc/kafka.keytab
+        realm: REALM.NET
+        krb5_properties:
+          doNotPrompt: true
+          stringProp: test
+        zk_krb5_properties:
+          clearPass: false
+          stringBoolean: 'false'
