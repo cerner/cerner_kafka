@@ -44,6 +44,31 @@ describe file('/opt/kafka/config/log4j.properties') do
   it { should contain 'bogus.for.testing=log4j' }
 end
 
+describe file('/opt/kafka/config/jaas.conf') do
+  it { should be_file }
+  it { should be_owned_by 'kafka' }
+  it { should be_grouped_into 'kafka' }
+  it { should contain 'keyTab="/etc/kafka.keytab"' }
+  it { should contain 'principal="kafka/kafkahost@REALM.NET"' }
+  it { should contain 'KafkaServer {' }
+  it { should contain 'Client {' }
+  it { should contain 'useKeyTab=true' }
+  it { should contain 'storeKey=true' }
+  it { should contain 'doNotPrompt=true' }
+  it { should contain 'clearPass=false' }
+  it { should contain 'stringProp="test"' }
+  it { should contain 'stringBoolean=false' }
+end
+
+describe file('/home/kafka/.bash_profile') do
+  it { should be_file }
+  it { should be_owned_by 'kafka' }
+  it { should be_grouped_into 'kafka' }
+  it { should contain 'KAFKA_HEAP_OPTS="-Xmx256m -Xms256m"' }
+  it { should contain 'BOGUS_VAR=TEST_VALUE' }
+  it { should contain 'KAFKA_OPTS="-Dsome.system.property=ok"' }
+end
+
 describe file('/etc/kafka') do
   it { should be_directory }
   it { should be_linked_to '/opt/kafka/config' }
