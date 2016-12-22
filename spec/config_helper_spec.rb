@@ -123,4 +123,87 @@ describe CernerKafkaHelper do
     end
 
   end
+
+  describe '#broker_id' do
+    let(:meta_with_broker_id) do
+      [
+        '# a comment',
+        'version=0',
+        'broker.id=1'
+      ].join("\n")
+    end
+
+    let(:meta_without_broker_id) do
+      [
+        '# a comment',
+        'version=0'
+      ].join("\n")
+    end
+
+    context 'log.dir is set' do
+      before(:each) do
+        node.default['kafka']['server.properties']['broker.id'] = '123'
+      end
+
+      it 'should return broker id' do
+        expect(CernerKafkaHelper.broker_id(node)).to eq('123')
+      end
+    end
+
+    context 'log.dir is set' do
+      before(:each) do
+        node.default['kafka']['server.properties']['log.dir'] = '/var/kafka'
+        allow(File).to receive(:exists?).with('/var/kafka/meta.properties').and_return(true)
+        allow(IO).to receive(:read).with('/var/kafka/meta.properties').and_return(meta_with_broker_id)
+      end
+
+      it 'should return broker_id' do
+        expect(CernerKafkaHelper.broker_id(node)).to eq('1')
+      end
+    end
+
+    context 'log.dirs is set' do
+      before(:each) do
+        node.default['kafka']['server.properties']['log.dirs'] = '/var/kafka1,/var/kafka2'
+        allow(File).to receive(:exists?).with('/var/kafka1/meta.properties').and_return(false)
+        allow(File).to receive(:exists?).with('/var/kafka2/meta.properties').and_return(true)
+        allow(IO).to receive(:read).with('/var/kafka2/meta.properties').and_return(meta_with_broker_id)
+      end
+
+      it 'should return broker_id' do
+        expect(CernerKafkaHelper.broker_id(node)).to eq('1')
+      end
+    end
+
+    context 'no log.dir(s) property is set' do
+      it 'should return nil' do
+        expect(CernerKafkaHelper.broker_id(node)).to eq(nil)
+      end
+    end
+
+    context 'meta.properties file do not exist' do
+      before(:each) do
+        node.default['kafka']['server.properties']['log.dirs'] = '/var/kafka1,/var/kafka2'
+        allow(File).to receive(:exists?).with('/var/kafka1/meta.properties').and_return(false)
+        allow(File).to receive(:exists?).with('/var/kafka2/meta.properties').and_return(false)
+      end
+
+      it 'should return broker_id' do
+        expect(CernerKafkaHelper.broker_id(node)).to eq(nil)
+      end
+    end
+
+    context 'no broker.id in any meta.properties files' do
+      before(:each) do
+        node.default['kafka']['server.properties']['log.dirs'] = '/var/kafka1,/var/kafka2'
+        allow(File).to receive(:exists?).with('/var/kafka1/meta.properties').and_return(false)
+        allow(File).to receive(:exists?).with('/var/kafka2/meta.properties').and_return(true)
+        allow(IO).to receive(:read).with('/var/kafka2/meta.properties').and_return(meta_without_broker_id)
+      end
+
+      it 'should return broker_id' do
+        expect(CernerKafkaHelper.broker_id(node)).to eq(nil)
+      end
+    end
+  end
 end
