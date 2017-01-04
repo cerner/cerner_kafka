@@ -1,6 +1,13 @@
 Change Log
 ==========
 
+[2.4.0 - 01-04-2017](https://github.com/cerner/cerner_kafka/issues?milestone=9&state=closed)
+--------------------------------------------------------------------------------------------
+
+  * [Enhancement] [Issue-58](https://github.com/cerner/cerner_kafka/issues/58) : Created broker_id attribute for cookbook to generate even if broker i…
+  * [Feature] [Issue-56](https://github.com/cerner/cerner_kafka/issues/56) : Support for Kerberos SASL authentication
+  * [Enhancement] [Issue-54](https://github.com/cerner/cerner_kafka/issues/54) : Ensure offset monitor install directory is owned by offset monitor us…
+
 [2.3.0 - 08-24-2016](https://github.com/cerner/cerner_kafka/issues?milestone=8&state=closed)
 --------------------------------------------------------------------------------------------
 
