@@ -63,4 +63,47 @@ class CernerKafkaHelper
 
     raise 'Unable to run kafka::default unable to determine zookeeper hosts'
   end
+
+  def self.broker_id node
+    if node['kafka']['server.properties']['broker.id']
+      return node['kafka']['server.properties']['broker.id']
+    end
+    
+    dirs = nil
+
+    if node["kafka"]["server.properties"]["log.dir"]
+      dirs = [node["kafka"]["server.properties"]["log.dir"]]
+    elsif node["kafka"]["server.properties"]["log.dirs"]
+      dirs = node["kafka"]["server.properties"]["log.dirs"].split(",")
+    else node["kafka"]["server.properties"]["log.dirs"]
+      Chef::Log.error('No log.dir(s) properties set in chef, unable to find broker.id')
+      return nil
+    end
+
+    dirs.each do |dir|
+      meta_file = ::File.join(dir, 'meta.properties')
+      if ::File.exists? meta_file
+        broker_id_lines = IO.read(meta_file).split("\n").select{|line| line.start_with?('broker.id=') }
+
+        if broker_id_lines.empty?
+          Chef::Log.info("Unable to find broker.id in meta file [#{meta_file}]")
+          next
+        end
+
+        broker_id_line = broker_id_lines.first
+        broker_id = broker_id_line['broker.id='.size, broker_id_line.size - 'broker.id='.size]
+
+        Chef::Log.info("Found broker.id [#{broker_id}] in [#{meta_file}]")
+
+        return broker_id
+
+      else
+        Chef::Log.info("No meta.properties file in log dir [#{dir}]")
+      end
+    end
+
+    Chef::Log.warn('Unable to find broker.id property in meta.properties file')
+
+    nil
+  end
 end

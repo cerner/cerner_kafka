@@ -208,3 +208,10 @@ service "kafka" do
   action [:enable, :start]
   supports :status => true, :restart => true
 end
+
+# Provides the broker id as a chef attribute
+ruby_block "fetch kafka broker.id" do
+  block do
+    node.default['kafka']['broker_id'] = CernerKafkaHelper.broker_id(node)
+  end
+end
