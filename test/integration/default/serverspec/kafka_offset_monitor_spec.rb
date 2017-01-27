@@ -20,7 +20,7 @@ describe file('/etc/init.d/kafka-offset-monitor') do
   it { should be_grouped_into 'root' }
   it { should contain 'USER="kafka"' }
   it { should contain 'INSTALL_DIR="/opt/KafkaOffsetMonitor"' }
-  it { should contain 'JAVA_OPTIONS="-Dlog4j.configuration=offset_monitor_log4j.properties"' }
+  it { should contain 'JAVA_OPTIONS="-Dlog4j.configuration=offset_monitor_log4j.properties -Djava.security.auth.login.config=/opt/KafkaOffsetMonitor/jaas.conf"' }
   it { should contain 'MAIN_CLASS="com.quantifind.kafka.offsetapp.OffsetGetterWeb"' }
   it { should contain 'LOG_FILE="/var/log/kafka/kafka-offset-monitor-init.log"' }
   it { should contain 'OPTIONS="--port 8088 --dbName offset_monitor --refresh 15.minutes --retain 7.days --zk localhost:2181 --zkSessionTimeout 30.seconds"' }
