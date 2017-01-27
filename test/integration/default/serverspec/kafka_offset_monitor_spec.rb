@@ -26,6 +26,22 @@ describe file('/etc/init.d/kafka-offset-monitor') do
   it { should contain 'OPTIONS="--port 8088 --dbName offset_monitor --refresh 15.minutes --retain 7.days --zk localhost:2181 --zkSessionTimeout 30.seconds"' }
 end
 
+describe file('/opt/KafkaOffsetMonitor/jaas.conf') do
+  it { should be_file }
+  it { should be_owned_by 'kafka' }
+  it { should be_grouped_into 'kafka' }
+  it { should contain 'keyTab="/etc/kafka.keytab"' }
+  it { should contain 'principal="kafka/kafkahost@REALM.NET"' }
+  it { should contain 'KafkaServer {' }
+  it { should contain 'Client {' }
+  it { should contain 'useKeyTab=true' }
+  it { should contain 'storeKey=true' }
+  it { should contain 'doNotPrompt=true' }
+  it { should contain 'clearPass=false' }
+  it { should contain 'stringProp="test"' }
+  it { should contain 'stringBoolean=false' }
+end
+
 describe 'kafka offset monitor' do
 
   it 'should own all files' do
