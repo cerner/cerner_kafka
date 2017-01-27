@@ -27,7 +27,7 @@ before_script:
   # Setup chefdk (Initialize your shell to use ChefDK as your primary ruby)
   - eval "$(/opt/chefdk/bin/chef shell-init bash)"
   # Install test kitchen docker integration
-  - /opt/chefdk/embedded/bin/chef gem install kitchen-dokken
+  - /opt/chefdk/embedded/bin/chef gem install kitchen-dokken -v 1.1.0
 
 script:
   # Run tests
