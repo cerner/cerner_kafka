@@ -34,7 +34,6 @@ describe file('/opt/KafkaOffsetMonitor/jaas.conf') do
   it { should contain 'keyTab="/etc/kafka.keytab"' }
   it { should contain 'keyTab="/etc/kafka.keytab"' }
   it { should contain 'principal="kafka/kafkahost@REALM.NET"' }
-  it { should contain 'KafkaServer {' }
   it { should contain 'Client {' }
   it { should contain 'useKeyTab=true' }
   it { should contain 'storeKey=true' }
