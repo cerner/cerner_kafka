@@ -99,7 +99,7 @@ default["kafka"]["offset_monitor"]["log4j.properties"]["log4j.appender.OFFSET.Fi
 #Kerberos configuration
 default["kafka"]["kerberos"]["enable"] = false
 # The keytab location and realm (or complete custom principal) are required if Kerberos is enabled with the above attribute
-default["kafka"]["kerberos"]["keytab_location"] = nil
+default["kafka"]["kerberos"]["keytab"] = nil
 default["kafka"]["kerberos"]["realm"] = nil
 default["kafka"]["kerberos"]["principal"] = "#{node["kafka"]["user"]}/#{node["fqdn"]}@#{node["kafka"]["kerberos"]["realm"]}"
 default["kafka"]["kerberos"]["enable_zk"] = false
