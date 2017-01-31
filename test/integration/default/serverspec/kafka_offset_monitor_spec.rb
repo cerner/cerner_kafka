@@ -30,6 +30,8 @@ describe file('/opt/KafkaOffsetMonitor/jaas.conf') do
   it { should be_file }
   it { should be_owned_by 'kafka' }
   it { should be_grouped_into 'kafka' }
+  it { should contain 'KafkaClient {' }
+  it { should contain 'keyTab="/etc/kafka.keytab"' }
   it { should contain 'keyTab="/etc/kafka.keytab"' }
   it { should contain 'principal="kafka/kafkahost@REALM.NET"' }
   it { should contain 'KafkaServer {' }

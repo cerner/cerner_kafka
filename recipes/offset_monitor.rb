@@ -114,7 +114,7 @@ if node["kafka"]["kerberos"]["enable"]
   raise "Kerberos realm or principal must be configured" if node["kafka"]["kerberos"]["principal"].end_with? '@'
 
   template jaas_path do
-    source "jaas_config.erb"
+    source "jaas_client_config.erb"
     owner node["kafka"]["user"]
     group node["kafka"]["group"]
     mode  00755
