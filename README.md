@@ -153,8 +153,11 @@ ZooKeeper client authentication can additionally be enabled by setting `node["ka
 Custom Krb5LoginModule options can be set using the `node["kafka"]["kerberos"]["krb5_properties"]` attribute hash for Kafka,
 or `node["kafka"]["kerberos"]["zk_krb5_properties"]` for ZooKeeper (see attributes file for defaults).
 
-Note that enabling Kerberos does not automatically set any configuration into `server.properties`. The following
-properties should be evaluated for relevance and configured separately as needed.
+The cookbook supports setting up both Kafka brokers and KafkaOffsetMonitor for kerberos.
+
+Note that enabling Kerberos for a Kafka broker does not automatically set any
+configuration into `server.properties`. The following properties should be evaluated
+for relevance and configured separately as needed.
 
 * `listeners`
 * `sasl.enabled.mechanisms`
@@ -260,7 +263,7 @@ Attributes
  * `node["kafka"]["offset_monitor"]["options"]` : A hash of options to be supplied to command to run offset monitor (see attributes file for defaults)
  * `node["kafka"]["service"]["stdout"]` : The file to keep std output of kafka init service (default = "/dev/null")
  * `node["kafka"]["service"]["stderr"]` : The file to keep std error of kafka init service (default = "/dev/null")
- * `node["kafka"]["kerberos"]["enable"]` A boolean indicating if Kerberos authentication for the broker should be enabled (default = false)
+ * `node["kafka"]["kerberos"]["enable"]` A boolean indicating if Kerberos authentication should be enabled (default = false)
  * `node["kafka"]["kerberos"]["enable_zk"]` : A boolean indicating if ZooKeeper client authentication should also be enabled, only applies if `node["kafka"]["kerberos"]["enable"]` = `true` (default = false)
  * `node["kafka"]["kerberos"]["keytab"]` : the Kerberos keytab file location (default = nil)
  * `node["kafka"]["kerberos"]["realm"]` : the Kerberos realm (default = nil)

@@ -101,6 +101,27 @@ template File.join(node["kafka"]["offset_monitor"]["install_dir"], 'offset_monit
   notifies :restart, "service[kafka-offset-monitor]"
 end
 
+# Write JAAS configuration file if enabled
+if node["kafka"]["kerberos"]["enable"]
+
+  jaas_path = "#{node['kafka']['offset_monitor']['install_dir']}/jaas.conf"
+
+  # add JAAS config location as default JVM parameter
+  node.default['kafka']['offset_monitor']['java_options']['-Djava.security.auth.login.config='] = jaas_path
+
+  # Verify required attributes are set
+  raise "Kerberos keytab location must be configured" if node["kafka"]["kerberos"]["keytab"].nil?
+  raise "Kerberos realm or principal must be configured" if node["kafka"]["kerberos"]["principal"].end_with? '@'
+
+  template jaas_path do
+    source "jaas_client_config.erb"
+    owner node["kafka"]["user"]
+    group node["kafka"]["group"]
+    mode  00755
+    notifies :restart, "service[kafka-offset-monitor]"
+  end
+end
+
 # Create init.d script for kafka offset monitor
 template "/etc/init.d/kafka-offset-monitor" do
   source "kafka_offset_monitor_initd.erb"
