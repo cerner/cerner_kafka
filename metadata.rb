@@ -6,6 +6,11 @@ description       "Installs and configures a Kafka"
 issues_url        'https://github.com/cerner/cerner_kafka/issues'
 source_url        'https://github.com/cerner/cerner_kafka'
 
+supports 'centos'
+supports 'redhat'
+supports 'ubuntu'
+supports 'debian'
+
 depends 'java'
 depends 'ulimit'
 depends 'logrotate'
