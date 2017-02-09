@@ -11,30 +11,41 @@ also included.
 
 View the [Change Log](CHANGELOG.md) to see what has changed.
 
+Getting Started
+---------------
+
+To get setup you need to do the following,
+
+Provide a value for `node["kafka"]["zookeepers"]` with an array of zookeeper host
+names (i.e. `['zk1.domain.com', 'zk2.domain.com', 'zk3.domain.com']`).
+
+With the defaults and the default recipe this will install and run a 0.9.0.0 Kafka
+broker using Kafka's defaults.
+
 What this will setup
 --------------------
 
-This will install Kafka at `node["kafka"]["install_dir"]`. In order to handle upgrades appropriately we use symbolic links and land the real installations
-elsewhere.
+This will install Kafka at `node["kafka"]["install_dir"]`. In order to handle
+upgrades appropriately we use symbolic links and land the real installations elsewhere.
 
 The true installations will land,
 
-    node["kafka"]["base_dir"] (defaults to /opt)
-    | - kafka_1.2.3
+    /opt (configurable with node["kafka"]["base_dir"])
+    | - kafka_0.9.0.0
     | | - config
     | | - bin
-    | | - kafka_1.2.3.jar
+    | | - kafka_0.9.0.0.jar
     | | - ...
 
 While we provide a symbolic link to the convenient location,
 
-    node["kafka"]["install_dir"] (defaults to /opt/kafka)
+    /opt/kafka (configurable with node["kafka"]["install_dir"])
     | - config
     | - bin
-    | - kafka_1.2.3.jar
+    | - kafka_0.9.0.0.jar
     | - ...
 
-It will also create/setup a service which can be used to start/stop/restart kafka,
+It will also create/setup an init service which can be used to start/stop/restart kafka,
 
     service kafka [start|stop|restart|status]
 
@@ -43,16 +54,19 @@ We also link kafka's log directory to `/var/log/kafka` to make it easier to find
 Usage
 -----
 
-These are the requirements that need to be satisfied in order to get the cookbook to run.
+Here are some common deployment options and tips
 
- * Have filled out the following required attributes
-   * `node["kafka"]["brokers"]` or `node["kafka"]["server.properties"]["broker.id"]` if you are running Kafka < 0.9. For Kafka >= 0.9 a broker id can be dynamically assigned
-   * `node["kafka"]["zookeepers"]` or `node["kafka"]["server.properties"]["zookeeper.connect"]`
+### Deploying Kafka 0.8
 
-If you don't fulfill the requirements the recipe will error out telling you what was missing.
+This cookbook can be used to install/deploy Kafka 0.8.X but some additional configuration
+is required. In addition to setting the `node["kafka"]["zookeepers"]` attribute
+you will also need to set the `node["kafka"]["brokers"]` attribute with an array
+of Kafka broker host names.
 
-Additionally if you want to use a Zookeeper chroot with your kafka installation you can provide it by setting
-`node["kafka"]["zookeeper_chroot"]`.
+You will also need to tweak `node["kafka"]["version"]` to the version that will
+be used and possibly `node["kafka"]["scala_version"]` as well which defaults to `2.11`.
+
+### Kafka brokers and zookeepers attributes
 
 The attributes,
 
@@ -67,16 +81,20 @@ Actually map to 'server.properties' settings,
 We do this mapping for you when you provide the `node["kafka"]["brokers"]` and `node["kafka"]["zookeepers"]`
 attributes.
 
-For the `node["kafka"]["brokers"]` => `node["kafka"]["server.properties"]["broker.id"]` mapping to work properly
+You can choose to provide the `server.properties` attribute instead of
+`node["kafka"]["brokers"]` or `node["kafka"]["zookeepers"]`.
+
+To map `node["kafka"]["brokers"]` to `node["kafka"]["server.properties"]["broker.id"]` correctly
 all Chef nodes running the kafka recipe (and are part of the same Kafka cluster) must have the same list of
 `node["kafka"]["brokers"]` and all broker hostnames must be in the same order. We determine the
 `node["kafka"]["server.properties"]["broker.id"]` by using the index of Chef node's fqdn/hostname/ip in the
 list as the `node["kafka"]["server.properties"]["broker.id"]`.
 
+Additionally if you want to use a Zookeeper chroot with your kafka installation you can provide it by setting
+`node["kafka"]["zookeeper_chroot"]`.
+
 Using `node["kafka"]["brokers"]`, `node["kafka"]["zookeepers"]` and `node["kafka"]["zookeeper_chroot"]` attributes are
 the recommended way to setup your kafka cluster in Chef.
-
-Once all that is done you should be able to run the recipe without any problem.
 
 ### Updating from 1.X and 2.X of the Cookbook
 
