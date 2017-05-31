@@ -27,9 +27,7 @@ before_script:
   # Setup chefdk (Initialize your shell to use ChefDK as your primary ruby)
   - eval "$(/opt/chefdk/bin/chef shell-init bash)"
   # Install test kitchen docker integration
-  # Locking down to version 1.1.0. 2.X would fail during serverspec
-  # https://github.com/someara/kitchen-dokken/issues/62 
-  - /opt/chefdk/embedded/bin/chef gem install kitchen-dokken -v 1.1.0
+  - /opt/chefdk/embedded/bin/chef gem install kitchen-dokken
 
 script:
   # Run tests
