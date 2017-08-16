@@ -38,7 +38,7 @@ user node["kafka"]["user"] do
   gid node["kafka"]["group"]
   shell "/bin/bash"
   home "/home/#{node["kafka"]["user"]}"
-  supports :manage_home => true
+  manage_home true
 end
 
 # Ensure the Kafka log directory exists
