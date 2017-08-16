@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+[2.5.0 - 08-16-2017](https://github.com/cerner/cerner_kafka/issues?milestone=10&state=closed)
+---------------------------------------------------------------------------------------------
+
+  * [Enhancement] [Issue-61](https://github.com/cerner/cerner_kafka/issues/61) : Fixed kerberos keytab attribute name in defaults
+  * [Enhancement] [Issue-60](https://github.com/cerner/cerner_kafka/issues/60) : Added support for running kafka offset monitor with kerberos
+
 [2.4.0 - 01-04-2017](https://github.com/cerner/cerner_kafka/issues?milestone=9&state=closed)
 --------------------------------------------------------------------------------------------
 
