@@ -96,6 +96,7 @@ default["kafka"]["offset_monitor"]["options"]["--retain"] = node["kafka"]["offse
 default["kafka"]["offset_monitor"]["log4j.properties"]["log4j.rootLogger"] = "INFO, OFFSET"
 default["kafka"]["offset_monitor"]["log4j.properties"]["log4j.appender.OFFSET"] = "org.apache.log4j.RollingFileAppender"
 default["kafka"]["offset_monitor"]["log4j.properties"]["log4j.appender.OFFSET.MaxBackupIndex"] = "5"
+default["kafka"]["offset_monitor"]["log4j.properties"]["log4j.appender.OFFSET.MaxFileSize"] = "10MB"
 default["kafka"]["offset_monitor"]["log4j.properties"]["log4j.appender.OFFSET.layout"] = "org.apache.log4j.PatternLayout"
 default["kafka"]["offset_monitor"]["log4j.properties"]["log4j.appender.OFFSET.layout.ConversionPattern"] = "%d{ISO8601} %p %c: %m%n"
 default["kafka"]["offset_monitor"]["log4j.properties"]["log4j.appender.OFFSET.File"] = File.join node['kafka']['log_dir'], 'kafka-offset-monitor.log'
