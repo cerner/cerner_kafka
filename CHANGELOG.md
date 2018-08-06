@@ -1,9 +1,6 @@
 Change Log
 ==========
 
-[2.6.1 - NOY]
-Change log4j properties for log rotation and deletion.
-
 [2.5.0 - 08-16-2017](https://github.com/cerner/cerner_kafka/issues?milestone=10&state=closed)
 ---------------------------------------------------------------------------------------------
 
