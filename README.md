@@ -262,7 +262,7 @@ Attributes
  * `node["kafka"]["shutdown_timeout"]` : The init.d script shutdown timeout in seconds. Adjust as needed based on cluster size (in terms of partitions) and required shutdown time. This attribute has been DEPRECATED. Use `node["kafka"]["init"]["shutdown_timeout"]` instead. (default=30)
  * `node["kafka"]["init"]["shutdown_timeout"]` : The init.d script shutdown timeout in seconds. Adjust as needed based on cluster size (in terms of partitions) and required shutdown time. (default=`node["kafka"]["shutdown_timeout"]`)
  * `node["kafka"]["init"]["sleep_between_restart"]` : How long if any the init script should sleep (in seconds) after stop and before start (default=0)
- * `node["kafka"]["init"]["kafka_main"]` : The name of the Kafka process to look for in the init script (default=`kafka.Kafka`)
+ * `node["kafka"]["init"]["kafka_main"]` : The name of the Kafka process to look for in the init script (default=`java`)
  * `node["kafka"]["init"]["stop_sleep_time"]` : How long we should sleep for (in seconds) during stop before checking if Kafka has stopped yet (default=5)
  * `node["kafka"]["env_vars"]` : A hash of environment variable names to their values to be set for the kafka user. This can be used to customize the server memory settings. (default={})
  * `node["kafka"]["lib_jars"]` : A list of URLs to install a jar in `#{node["kafka"]["install_dir"]}/libs`. (default=[])
