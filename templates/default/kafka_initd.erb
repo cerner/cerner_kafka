@@ -100,7 +100,7 @@ status() {
 }
 
 findPid() {
-  FOUND_PID=$(pgrep -u $USER -f $KAFKA_MAIN)
+  FOUND_PID=$(pgrep -u $USER -f $KAFKA_MAIN -P 1)
 }
 
 case "$1" in

@@ -28,7 +28,7 @@ default["kafka"]["init"]["shutdown_timeout"] = node["kafka"]["shutdown_timeout"]
 # How long we should sleep between stop and start during restart
 default["kafka"]["init"]["sleep_between_restart"] = 0
 # The name of the Kafka process we should look for
-default["kafka"]["init"]["kafka_main"] = "kafka.Kafka"
+default["kafka"]["init"]["kafka_main"] = "java"
 # How long we should sleep in stop before checking if kafka is still running
 default["kafka"]["init"]["stop_sleep_time"] = 5
 
