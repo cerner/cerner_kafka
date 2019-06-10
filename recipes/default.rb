@@ -207,6 +207,8 @@ end
 service "kafka" do
   action [:enable, :start]
   supports :status => true, :restart => true
+  retries 2
+  retry_delay 5
 end
 
 # Provides the broker id as a chef attribute
