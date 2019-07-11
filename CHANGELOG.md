@@ -4,6 +4,11 @@ Change Log
 [2.6.0 - 05-06-2019](https://github.com/cerner/cerner_kafka/issues?milestone=11&state=closed)
 ---------------------------------------------------------------------------------------------
 
+  * [Enhancement] [Issue-66](https://github.com/cerner/cerner_kafka/issues/66) : Kafka 2.x upgrade
+
+[2.6.0 - 05-06-2019](https://github.com/cerner/cerner_kafka/issues?milestone=11&state=closed)
+---------------------------------------------------------------------------------------------
+
   * [Enhancement] [Issue-66](https://github.com/cerner/cerner_kafka/issues/66) : Fix init.d script for 2.2 support
 
 [2.5.0 - 08-16-2017](https://github.com/cerner/cerner_kafka/issues?milestone=10&state=closed)
