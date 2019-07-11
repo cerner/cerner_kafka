@@ -15,6 +15,6 @@ depends 'java'
 depends 'ulimit'
 depends 'logrotate'
 
-version           '2.7.0'
+version           '2.8.0'
 
 chef_version '>= 12.0' if respond_to?(:chef_version)
