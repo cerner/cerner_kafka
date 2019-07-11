@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+[2.7.0 - 07-11-2019](https://github.com/cerner/cerner_kafka/issues?milestone=12&state=closed)
+---------------------------------------------------------------------------------------------
+
+  * [Enhancement] [Issue-68](https://github.com/cerner/cerner_kafka/issues/68) : broker restart fails
+
 [2.6.0 - 05-06-2019](https://github.com/cerner/cerner_kafka/issues?milestone=11&state=closed)
 ---------------------------------------------------------------------------------------------
 
